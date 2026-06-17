@@ -1,0 +1,470 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>零基础搭建免费博客：Hexo + GitHub Pages 完整教程 | 我的个人博客</title><meta name="author" content="博主"><meta name="copyright" content="博主"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本教程面向零基础用户，手把手教你用 Hexo 搭建个人博客并免费部署到 GitHub Pages。即使你不懂代码，跟着步骤也能完成。   目录 为什么选择 Hexo？ 博客技术方案对比 环境准备 安装 Hexo 初始化博客项目 安装和配置主题 用 Hexo 写文章 本地预览 部署到 GitHub Pages 后续维护：更新博客 常见问题   1. 为什么选择 Hexo？市面上有很多博客方案，从零">
+<meta property="og:type" content="article">
+<meta property="og:title" content="零基础搭建免费博客：Hexo + GitHub Pages 完整教程">
+<meta property="og:url" content="https://dxr-66.github.io/my-blog/2026/06/17/hexo-blog-tutorial/index.html">
+<meta property="og:site_name" content="我的个人博客">
+<meta property="og:description" content="本教程面向零基础用户，手把手教你用 Hexo 搭建个人博客并免费部署到 GitHub Pages。即使你不懂代码，跟着步骤也能完成。   目录 为什么选择 Hexo？ 博客技术方案对比 环境准备 安装 Hexo 初始化博客项目 安装和配置主题 用 Hexo 写文章 本地预览 部署到 GitHub Pages 后续维护：更新博客 常见问题   1. 为什么选择 Hexo？市面上有很多博客方案，从零">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dxr-66.github.io/my-blog/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-06-17T08:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-17T08:33:13.899Z">
+<meta property="article:author" content="博主">
+<meta property="article:tag" content="GitHub Pages">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dxr-66.github.io/my-blog/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "零基础搭建免费博客：Hexo + GitHub Pages 完整教程",
+  "url": "https://dxr-66.github.io/my-blog/2026/06/17/hexo-blog-tutorial/",
+  "image": "https://dxr-66.github.io/my-blog/img/butterfly-icon.png",
+  "datePublished": "2026-06-17T08:00:00.000Z",
+  "dateModified": "2026-06-17T08:33:13.899Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "博主",
+      "url": "https://dxr-66.github.io/my-blog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/my-blog/img/favicon.png"><link rel="canonical" href="https://dxr-66.github.io/my-blog/2026/06/17/hexo-blog-tutorial/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/my-blog/css/index.css?v=5.5.5"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/my-blog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '零基础搭建免费博客：Hexo + GitHub Pages 完整教程',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/my-blog/"><span class="site-name">我的个人博客</span></a><a class="nav-page-title" href="/my-blog/"><span class="site-name">零基础搭建免费博客：Hexo + GitHub Pages 完整教程</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">零基础搭建免费博客：Hexo + GitHub Pages 完整教程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-17T08:00:00.000Z" title="发表于 2026-06-17 16:00:00">2026-06-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-17T08:33:13.899Z" title="更新于 2026-06-17 16:33:13">2026-06-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/my-blog/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">技术分享</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>本教程面向零基础用户，手把手教你用 Hexo 搭建个人博客并免费部署到 GitHub Pages。即使你不懂代码，跟着步骤也能完成。</p>
+</blockquote>
+<hr>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><a href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-hexo">为什么选择 Hexo？</a></li>
+<li><a href="#2-%E5%8D%9A%E5%AE%A2%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94">博客技术方案对比</a></li>
+<li><a href="#3-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></li>
+<li><a href="#4-%E5%AE%89%E8%A3%85-hexo">安装 Hexo</a></li>
+<li><a href="#5-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8D%9A%E5%AE%A2%E9%A1%B9%E7%9B%AE">初始化博客项目</a></li>
+<li><a href="#6-%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%BB%E9%A2%98">安装和配置主题</a></li>
+<li><a href="#7-%E7%94%A8-hexo-%E5%86%99%E6%96%87%E7%AB%A0">用 Hexo 写文章</a></li>
+<li><a href="#8-%E6%9C%AC%E5%9C%B0%E9%A2%84%E8%A7%88">本地预览</a></li>
+<li><a href="#9-%E9%83%A8%E7%BD%B2%E5%88%B0-github-pages">部署到 GitHub Pages</a></li>
+<li><a href="#10-%E5%90%8E%E7%BB%AD%E7%BB%B4%E6%8A%A4%E6%9B%B4%E6%96%B0%E5%8D%9A%E5%AE%A2">后续维护：更新博客</a></li>
+<li><a href="#11-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">常见问题</a></li>
+</ol>
+<hr>
+<h2 id="1-为什么选择-Hexo？"><a href="#1-为什么选择-Hexo？" class="headerlink" title="1. 为什么选择 Hexo？"></a>1. 为什么选择 Hexo？</h2><p>市面上有很多博客方案，从<strong>零代码平台</strong>到<strong>纯手写网页</strong>都有。Hexo 的优势在于：</p>
+<ul>
+<li><strong>完全免费</strong>：不需要服务器、不需要数据库</li>
+<li><strong>无需后端运维</strong>：没有数据库、没有后台管理、没有安全风险</li>
+<li><strong>速度快</strong>：生成纯静态 HTML 页面，加载速度极快</li>
+<li><strong>专注写作</strong>：用 Markdown 格式写文章，无需关注排版</li>
+<li><strong>主题丰富</strong>：几百款精美主题，一键切换</li>
+<li><strong>部署简单</strong>：推送到 GitHub 即可自动发布</li>
+</ul>
+<hr>
+<h2 id="2-博客技术方案对比"><a href="#2-博客技术方案对比" class="headerlink" title="2. 博客技术方案对比"></a>2. 博客技术方案对比</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>适合人群</th>
+<th>优点</th>
+<th>缺点</th>
+<th>费用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hexo &#x2F; Hugo &#x2F; Jekyll</strong></td>
+<td>技术爱好者、开发者</td>
+<td>免费、快速、可控</td>
+<td>需要学习基础命令</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>WordPress</strong></td>
+<td>追求功能丰富的用户</td>
+<td>插件多、功能强大</td>
+<td>需要服务器、维护成本高</td>
+<td>需服务器费用</td>
+</tr>
+<tr>
+<td><strong>Notion + NotionNext</strong></td>
+<td>不想碰代码的人</td>
+<td>所见即所得</td>
+<td>依赖第三方、可定制性弱</td>
+<td>免费&#x2F;付费</td>
+</tr>
+<tr>
+<td><strong>知乎 &#x2F; 公众号 &#x2F; 简书</strong></td>
+<td>只想写内容的人</td>
+<td>零门槛、有流量</td>
+<td>平台限制、不能自定义</td>
+<td>免费</td>
+</tr>
+<tr>
+<td><strong>手写 HTML</strong></td>
+<td>前端开发者</td>
+<td>完全可控</td>
+<td>维护成本高、不适合文章多</td>
+<td>免费</td>
+</tr>
+</tbody></table>
+<p><strong>总结：</strong></p>
+<ul>
+<li>如果你<strong>不想花一分钱</strong>，想要<strong>自己的域名</strong>，愿意<strong>学一点点基础操作</strong> → 选 <strong>Hexo</strong></li>
+<li>如果你<strong>完全不想碰任何技术</strong> → 选 <strong>知乎 &#x2F; 公众号</strong> 或 <strong>Notion</strong></li>
+<li>如果你<strong>需要复杂功能</strong>（评论系统、会员系统等） → 选 <strong>WordPress</strong></li>
+</ul>
+<hr>
+<h2 id="3-环境准备"><a href="#3-环境准备" class="headerlink" title="3. 环境准备"></a>3. 环境准备</h2><p>搭建 Hexo 博客需要以下工具：</p>
+<h3 id="3-1-安装-Node-js"><a href="#3-1-安装-Node-js" class="headerlink" title="3.1 安装 Node.js"></a>3.1 安装 Node.js</h3><p>Node.js 是 Hexo 的运行基础，官网下载安装即可：</p>
+<p>👉 <a target="_blank" rel="noopener" href="https://nodejs.org/">https://nodejs.org/</a>（推荐下载 LTS 版本）</p>
+<p>安装完成后，打开终端验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+
+<p>如果能看到版本号（如 <code>v20.x.x</code>），说明安装成功。</p>
+<h3 id="3-2-安装-Git"><a href="#3-2-安装-Git" class="headerlink" title="3.2 安装 Git"></a>3.2 安装 Git</h3><p>Git 用于版本管理和部署到 GitHub：</p>
+<p>👉 <a target="_blank" rel="noopener" href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></p>
+<p>安装完成后，终端验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-注册-GitHub-账号"><a href="#3-3-注册-GitHub-账号" class="headerlink" title="3.3 注册 GitHub 账号"></a>3.3 注册 GitHub 账号</h3><p>GitHub 是免费托管博客的地方，需要先注册：</p>
+<p>👉 <a target="_blank" rel="noopener" href="https://github.com/">https://github.com</a></p>
+<hr>
+<h2 id="4-安装-Hexo"><a href="#4-安装-Hexo" class="headerlink" title="4. 安装 Hexo"></a>4. 安装 Hexo</h2><p>打开终端，运行以下命令安装 Hexo 命令行工具：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<p>验证安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
+
+<p>如果显示 Hexo 版本号，说明安装成功。</p>
+<blockquote>
+<p><strong>什么是 Hexo CLI？</strong></p>
+<p>Hexo CLI 是一个命令行工具，类似 Word 的“新建文档”按钮。它可以帮你创建博客项目、生成新文章、预览网站、部署上线。</p>
+</blockquote>
+<hr>
+<h2 id="5-初始化博客项目"><a href="#5-初始化博客项目" class="headerlink" title="5. 初始化博客项目"></a>5. 初始化博客项目</h2><h3 id="5-1-创建博客文件夹"><a href="#5-1-创建博客文件夹" class="headerlink" title="5.1 创建博客文件夹"></a>5.1 创建博客文件夹</h3><p>在终端运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo init my-blog</span><br><span class="line"><span class="built_in">cd</span> my-blog</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<p>命令解释：</p>
+<ul>
+<li><code>hexo init my-blog</code>：创建名为 <code>my-blog</code> 的博客项目</li>
+<li><code>cd my-blog</code>：进入项目文件夹</li>
+<li><code>npm install</code>：安装博客运行所需的依赖包</li>
+</ul>
+<p>完成后，你的博客文件夹结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">my-blog/</span><br><span class="line">├── _config.yml          # 网站主配置文件（站点名称、作者、部署地址等）</span><br><span class="line">├── source/</span><br><span class="line">│   └── _posts/          # 存放你的文章（Markdown 格式）</span><br><span class="line">├── public/              # 生成的静态网站文件（自动生成，不要手动修改）</span><br><span class="line">├── scaffolds/           # 文章模板</span><br><span class="line">├── themes/              # 主题文件夹</span><br><span class="line">├── package.json         # 项目依赖列表</span><br><span class="line">└── node_modules/        # 依赖包（自动生成）</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-修改网站基本信息"><a href="#5-2-修改网站基本信息" class="headerlink" title="5.2 修改网站基本信息"></a>5.2 修改网站基本信息</h3><p>打开 <code>_config.yml</code> 文件，修改以下内容：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 网站信息</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">我的博客</span>                  <span class="comment"># 博客标题</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;记录生活，分享技术&#x27;</span>    <span class="comment"># 副标题</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">你的名字</span>                 <span class="comment"># 作者名</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span>                <span class="comment"># 语言：中文</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 网站地址（后面部署后修改）</span></span><br><span class="line"><span class="attr">url:</span> <span class="string">https://yourusername.github.io/my-blog</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：<code>yourusername</code> 要替换为你的 GitHub 用户名。</p>
+</blockquote>
+<hr>
+<h2 id="6-安装和配置主题"><a href="#6-安装和配置主题" class="headerlink" title="6. 安装和配置主题"></a>6. 安装和配置主题</h2><p>Hexo 默认主题比较朴素，推荐安装 <strong>Butterfly</strong> 主题，美观且中文友好。</p>
+<h3 id="6-1-安装主题"><a href="#6-1-安装主题" class="headerlink" title="6.1 安装主题"></a>6.1 安装主题</h3><p>在 <code>my-blog</code> 目录下运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-theme-butterfly</span><br><span class="line">npm install hexo-renderer-pug hexo-renderer-stylus</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-启用主题"><a href="#6-2-启用主题" class="headerlink" title="6.2 启用主题"></a>6.2 启用主题</h3><p>修改 <code>_config.yml</code>，找到 <code>theme</code> 行：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改前</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">landscape</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改后</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">butterfly</span></span><br></pre></td></tr></table></figure>
+
+<p>保存后，再次生成网站，主题就会生效。</p>
+<blockquote>
+<p>更多主题可以去 <a target="_blank" rel="noopener" href="https://hexo.io/themes/">Hexo 主题官网</a> 挑选。</p>
+</blockquote>
+<hr>
+<h2 id="7-用-Hexo-写文章"><a href="#7-用-Hexo-写文章" class="headerlink" title="7. 用 Hexo 写文章"></a>7. 用 Hexo 写文章</h2><p>这是你最关心的部分：Hexo 怎么写博客？</p>
+<h3 id="7-1-文章存放在哪里？"><a href="#7-1-文章存放在哪里？" class="headerlink" title="7.1 文章存放在哪里？"></a>7.1 文章存放在哪里？</h3><p>所有文章都放在这个文件夹：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">my-blog/source/_posts/</span><br></pre></td></tr></table></figure>
+
+<p>每篇文章是一个 <code>.md</code> 文件（Markdown 格式）。</p>
+<h3 id="7-2-创建新文章"><a href="#7-2-创建新文章" class="headerlink" title="7.2 创建新文章"></a>7.2 创建新文章</h3><p>运行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">&quot;文章标题&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">&quot;我的第一篇博客&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>Hexo 会自动在 <code>source/_posts/</code> 下创建 <code>我的第一篇博客.md</code> 文件。</p>
+<h3 id="7-3-文章格式"><a href="#7-3-文章格式" class="headerlink" title="7.3 文章格式"></a>7.3 文章格式</h3><p>用文本编辑器打开 <code>.md</code> 文件，文章分两部分：</p>
+<h4 id="①-头部信息（YAML-Front-Matter）"><a href="#①-头部信息（YAML-Front-Matter）" class="headerlink" title="① 头部信息（YAML Front Matter）"></a>① 头部信息（YAML Front Matter）</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 我的第一篇博客</span><br><span class="line">date: 2026-06-17 14:18:32</span><br><span class="line">tags:</span><br><span class="line"><span class="bullet">  -</span> Hexo</span><br><span class="line"><span class="bullet">  -</span> 博客</span><br><span class="line">categories:</span><br><span class="line"><span class="section">  - 技术分享</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>文章标题</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>发布时间</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>标签（一篇文章可打多个标签）</td>
+</tr>
+<tr>
+<td><code>categories</code></td>
+<td>分类（文章归类）</td>
+</tr>
+</tbody></table>
+<h4 id="②-正文内容（Markdown-语法）"><a href="#②-正文内容（Markdown-语法）" class="headerlink" title="② 正文内容（Markdown 语法）"></a>② 正文内容（Markdown 语法）</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## 二级标题</span></span><br><span class="line"></span><br><span class="line"><span class="strong">**加粗文字**</span>  <span class="emphasis">*斜体*</span>  ~~删除线~~</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> 无序列表项 1</span><br><span class="line"><span class="bullet">-</span> 无序列表项 2</span><br><span class="line"></span><br><span class="line"><span class="bullet">1.</span> 有序列表 1</span><br><span class="line"><span class="bullet">2.</span> 有序列表 2</span><br><span class="line"></span><br><span class="line"><span class="quote">&gt; 这是一段引用文字</span></span><br><span class="line"></span><br><span class="line"><span class="code">```python</span></span><br><span class="line"><span class="code">def hello():</span></span><br><span class="line"><span class="code">    print(&quot;Hello, Hexo!&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://www.example.com/">点击访问链接</a></p>
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>25</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>30</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 7.4 Markdown 常用语法速查</span><br><span class="line"></span><br><span class="line">| 语法 | 效果 |</span><br><span class="line">|------|------|</span><br><span class="line">| `# 标题` | 一级标题 |</span><br><span class="line">| `## 标题` | 二级标题 |</span><br><span class="line">| `**文字**` | **加粗** |</span><br><span class="line">| `*文字*` | *斜体* |</span><br><span class="line">| `~~文字~~` | ~~删除线~~ |</span><br><span class="line">| `- 列表` | 无序列表 |</span><br><span class="line">| `1. 列表` | 有序列表 |</span><br><span class="line">| `&gt; 引用` | 引用块 |</span><br><span class="line">| `` `代码` `` | 行内代码 |</span><br><span class="line">| ```` ```python ```` | 代码块 |</span><br><span class="line">| `[文字](链接)` | 超链接 |</span><br><span class="line">| `![描述](图片)` | 插入图片 |</span><br><span class="line">| `---` | 分隔线 |</span><br><span class="line"></span><br><span class="line">### 7.5 推荐写作工具</span><br><span class="line"></span><br><span class="line">| 工具 | 特点 | 推荐度 |</span><br><span class="line">|------|------|--------|</span><br><span class="line">| **VS Code** | 免费、功能强大、有 Markdown 预览 | ⭐⭐⭐⭐⭐ |</span><br><span class="line">| **Typora** | 所见即所得，写作体验好 | ⭐⭐⭐⭐⭐ |</span><br><span class="line">| **记事本** | Windows 自带，无需安装 | ⭐⭐⭐ |</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">## 8. 本地预览</span><br><span class="line"></span><br><span class="line">写完文章后，先在本地预览效果，确认没问题再部署。</span><br><span class="line"></span><br><span class="line">### 8.1 启动预览服务器</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+
+<p>或者简写：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-2-浏览器访问"><a href="#8-2-浏览器访问" class="headerlink" title="8.2 浏览器访问"></a>8.2 浏览器访问</h3><p>打开浏览器，访问：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost:4000</span><br></pre></td></tr></table></figure>
+
+<p>你就能看到博客的实时效果。修改文章后刷新页面即可看到更新。</p>
+<h3 id="8-3-停止预览"><a href="#8-3-停止预览" class="headerlink" title="8.3 停止预览"></a>8.3 停止预览</h3><p>按 <code>Ctrl + C</code> 两次，停止本地服务器。</p>
+<hr>
+<h2 id="9-部署到-GitHub-Pages"><a href="#9-部署到-GitHub-Pages" class="headerlink" title="9. 部署到 GitHub Pages"></a>9. 部署到 GitHub Pages</h2><p>这是最后一步：把博客发布到互联网，让所有人都能访问。</p>
+<h3 id="9-1-安装部署插件"><a href="#9-1-安装部署插件" class="headerlink" title="9.1 安装部署插件"></a>9.1 安装部署插件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-2-修改部署配置"><a href="#9-2-修改部署配置" class="headerlink" title="9.2 修改部署配置"></a>9.2 修改部署配置</h3><p>打开 <code>_config.yml</code>，在文件末尾添加：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/yourusername/my-blog.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">gh-pages</span></span><br><span class="line">  <span class="attr">message:</span> <span class="string">&quot;Site updated: <span class="template-variable">&#123;&#123; now(&#x27;YYYY-MM-DD HH:mm:ss&#x27;) &#125;&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>重要</strong>：把 <code>yourusername</code> 替换为你的 <strong>GitHub 用户名</strong>。</p>
+</blockquote>
+<h3 id="9-3-创建-GitHub-仓库"><a href="#9-3-创建-GitHub-仓库" class="headerlink" title="9.3 创建 GitHub 仓库"></a>9.3 创建 GitHub 仓库</h3><ol>
+<li>登录 <a target="_blank" rel="noopener" href="https://github.com/">GitHub</a></li>
+<li>点击右上角 <strong>+</strong> → <strong>New repository</strong></li>
+<li>仓库名填：<code>my-blog</code></li>
+<li>选择 <strong>Public</strong>（公开）</li>
+<li>点击 <strong>Create repository</strong></li>
+</ol>
+<h3 id="9-4-初始化-Git-并推送代码"><a href="#9-4-初始化-Git-并推送代码" class="headerlink" title="9.4 初始化 Git 并推送代码"></a>9.4 初始化 Git 并推送代码</h3><p>在 <code>my-blog</code> 目录下运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial blog setup&quot;</span></span><br><span class="line">git branch -m main</span><br><span class="line">git remote add origin https://github.com/yourusername/my-blog.git</span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>把 <code>yourusername</code> 换成你的 GitHub 用户名。</p>
+</blockquote>
+<h3 id="9-5-部署博客"><a href="#9-5-部署博客" class="headerlink" title="9.5 部署博客"></a>9.5 部署博客</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>或者一步完成生成+部署：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>g</code> 是 <code>generate</code>（生成）的缩写，<code>d</code> 是 <code>deploy</code>（部署）的缩写。</p>
+</blockquote>
+<h3 id="9-6-等待生效"><a href="#9-6-等待生效" class="headerlink" title="9.6 等待生效"></a>9.6 等待生效</h3><p>首次部署需要等待 <strong>1-2 分钟</strong>，然后访问：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://yourusername.github.io/my-blog</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>把 <code>yourusername</code> 换成你的 GitHub 用户名。</p>
+</blockquote>
+<p>🎉 <strong>你的博客上线了！</strong></p>
+<hr>
+<h2 id="10-后续维护：更新博客"><a href="#10-后续维护：更新博客" class="headerlink" title="10. 后续维护：更新博客"></a>10. 后续维护：更新博客</h2><p>以后写新文章或修改旧文章的流程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 创建新文章</span></span><br><span class="line">hexo new <span class="string">&quot;新文章标题&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 编辑文章</span></span><br><span class="line"><span class="comment"># 打开 source/_posts/新文章标题.md，用文本编辑器写作</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. 本地预览</span></span><br><span class="line">hexo server</span><br><span class="line"><span class="comment"># 浏览器打开 http://localhost:4000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 生成并部署</span></span><br><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-1-每次部署会全部重新生成吗？"><a href="#10-1-每次部署会全部重新生成吗？" class="headerlink" title="10.1 每次部署会全部重新生成吗？"></a>10.1 每次部署会全部重新生成吗？</h3><p><strong>是的</strong>，每次运行 <code>hexo generate</code> 都会：</p>
+<ol>
+<li>清空 <code>public/</code> 文件夹</li>
+<li>重新生成所有页面（首页、文章页、分类页、标签页、归档页）</li>
+<li>推送到 GitHub</li>
+</ol>
+<p>这意味着：</p>
+<ul>
+<li>✅ 你不用担心遗漏，每次部署都是完整的</li>
+<li>⚠️ 文章多了生成会稍慢，但通常也就几秒到几十秒</li>
+</ul>
+<hr>
+<h2 id="11-常见问题"><a href="#11-常见问题" class="headerlink" title="11. 常见问题"></a>11. 常见问题</h2><h3 id="Q1-hexo-命令找不到（’hexo’-不是内部或外部命令）"><a href="#Q1-hexo-命令找不到（’hexo’-不是内部或外部命令）" class="headerlink" title="Q1: hexo 命令找不到（’hexo’ 不是内部或外部命令）"></a>Q1: <code>hexo</code> 命令找不到（’hexo’ 不是内部或外部命令）</h3><p><strong>原因</strong>：Hexo 没有安装到全局 PATH 中。</p>
+<p><strong>解决</strong>：在 <code>my-blog</code> 目录下使用本地 hexo：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">node_modules/.bin/hexo new <span class="string">&quot;标题&quot;</span></span><br><span class="line">node_modules/.bin/hexo generate</span><br><span class="line">node_modules/.bin/hexo deploy</span><br></pre></td></tr></table></figure>
+
+<h3 id="Q2-部署失败，提示无法连接-GitHub"><a href="#Q2-部署失败，提示无法连接-GitHub" class="headerlink" title="Q2: 部署失败，提示无法连接 GitHub"></a>Q2: 部署失败，提示无法连接 GitHub</h3><p><strong>原因</strong>：GitHub 仓库地址配置错误，或网络问题。</p>
+<p><strong>解决</strong>：</p>
+<ol>
+<li>检查 <code>_config.yml</code> 中的 <code>repo</code> 地址是否正确</li>
+<li>确认 GitHub 仓库已创建</li>
+<li>确认已推送源代码到 GitHub</li>
+</ol>
+<h3 id="Q3-部署成功但访问-404"><a href="#Q3-部署成功但访问-404" class="headerlink" title="Q3: 部署成功但访问 404"></a>Q3: 部署成功但访问 404</h3><p><strong>原因</strong>：GitHub Pages 需要时间生效，首次部署可能延迟 1-2 分钟。</p>
+<p><strong>解决</strong>：等待几分钟再刷新，或检查 GitHub 仓库的 <strong>Settings → Pages</strong> 设置。</p>
+<h3 id="Q4-博客里没有显示新文章"><a href="#Q4-博客里没有显示新文章" class="headerlink" title="Q4: 博客里没有显示新文章"></a>Q4: 博客里没有显示新文章</h3><p><strong>原因</strong>：可能只保存了文章，但没有重新生成和部署。</p>
+<p><strong>解决</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
+
+<h3 id="Q5-想换主题怎么办？"><a href="#Q5-想换主题怎么办？" class="headerlink" title="Q5: 想换主题怎么办？"></a>Q5: 想换主题怎么办？</h3><ol>
+<li>在 <code>themes/</code> 文件夹中放入新主题</li>
+<li>修改 <code>_config.yml</code> 中的 <code>theme:</code> 名称</li>
+<li>重新生成并部署</li>
+</ol>
+<hr>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>恭喜你！通过这篇教程，你已经学会了：</p>
+<ul>
+<li>✅ 为什么选择 Hexo 作为博客方案</li>
+<li>✅ 安装并配置 Hexo 博客</li>
+<li>✅ 安装 Butterfly 主题</li>
+<li>✅ 用 Markdown 写文章</li>
+<li>✅ 本地预览博客效果</li>
+<li>✅ 免费部署到 GitHub Pages</li>
+<li>✅ 后续维护和更新博客</li>
+</ul>
+<p><strong>下一步建议：</strong></p>
+<ol>
+<li>自定义博客标题和副标题</li>
+<li>尝试写 3-5 篇文章熟悉流程</li>
+<li>绑定自定义域名（可选，需要购买域名）</li>
+<li>探索更多 Hexo 主题和插件</li>
+</ol>
+<p>祝你博客写作愉快！🎉</p>
+<hr>
+<blockquote>
+<p><strong>本文写于 2026 年 6 月 17 日，使用 Hexo + Butterfly 主题生成。</strong></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://dxr-66.github.io/my-blog">博主</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dxr-66.github.io/my-blog/2026/06/17/hexo-blog-tutorial/">https://dxr-66.github.io/my-blog/2026/06/17/hexo-blog-tutorial/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dxr-66.github.io/my-blog" target="_blank">我的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/my-blog/tags/Hexo/">Hexo</a><a class="post-meta__tags" href="/my-blog/tags/%E6%95%99%E7%A8%8B/">教程</a><a class="post-meta__tags" href="/my-blog/tags/GitHub-Pages/">GitHub Pages</a></div><div class="post-share"><div class="social-share" data-image="/my-blog/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/my-blog/2026/06/17/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0Hexo%E5%86%99%E5%8D%9A%E5%AE%A2/" title="如何学习Hexo写博客"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">如何学习Hexo写博客</div></div><div class="info-2"><div class="info-item-1">1. 在哪里写文章？文章都放在这个文件夹里： 1my-blog/source/_posts/  每篇文章都是一个 .md 文件（Markdown 格式）。  2. 创建新文章的方法方法一：双击 “新建文章.bat”（最简单） 打开 my-blog 文件夹 双击 新建文章.bat 输入文章标题，回车 文章就创建好了！  方法二：在命令行创建12cd my-blognode_modules\.bin\hexo new &quot;文章标题&quot;   3. Markdown 写作格式文章分两部分：头部信息 + 正文内容 头部信息（YAML Front Matter）123456789---title: 文章标题date: 2026-06-17 15:36:39tags:  - 标签1  - 标签2categories:  - 分类名称---     字段 说明    title 文章标题   date 发布时间   tags 标签（可以给文章打多个标签）   categories 分类（文章归类）   正文内容（Markdown 语法）标题： 123# 一级标题## 二级标题##...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/my-blog/2026/06/17/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/" title="我的第一篇博客文章"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-17</div><div class="info-item-2">我的第一篇博客文章</div></div><div class="info-2"><div class="info-item-1">欢迎来到我的博客！这是我的第一篇博客文章，使用 Hexo 搭建。 为什么写博客？写博客有很多好处：  📝 记录学习笔记，方便日后回顾 🚀 分享技术经验，帮助更多人 💡 锻炼写作能力，理清思路 🌐 建立个人品牌，展示专业能力  关于 HexoHexo 是一个快速、简洁且高效的博客框架。它使用 Markdown 解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 主要特点：  极速生成：数百篇文章也能在几秒内生成 支持 Markdown：专注写作，无需关注排版 丰富的主题生态：几百款主题任你选择 一键部署：推送到 GitHub 即可自动发布  代码示例1console.log(&quot;Hello, Hexo Blog!&quot;);  123def hello_blog():    print(&quot;欢迎来到我的博客！&quot;)    return &quot;success&quot;  感谢阅读如果你也想搭建自己的博客，欢迎留言交流！🎉 </div></div></div></a><a class="pagination-related" href="/my-blog/2026/06/17/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0Hexo%E5%86%99%E5%8D%9A%E5%AE%A2/" title="如何学习Hexo写博客"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-17</div><div class="info-item-2">如何学习Hexo写博客</div></div><div class="info-2"><div class="info-item-1">1. 在哪里写文章？文章都放在这个文件夹里： 1my-blog/source/_posts/  每篇文章都是一个 .md 文件（Markdown 格式）。  2. 创建新文章的方法方法一：双击 “新建文章.bat”（最简单） 打开 my-blog 文件夹 双击 新建文章.bat 输入文章标题，回车 文章就创建好了！  方法二：在命令行创建12cd my-blognode_modules\.bin\hexo new &quot;文章标题&quot;   3. Markdown 写作格式文章分两部分：头部信息 + 正文内容 头部信息（YAML Front Matter）123456789---title: 文章标题date: 2026-06-17 15:36:39tags:  - 标签1  - 标签2categories:  - 分类名称---     字段 说明    title 文章标题   date 发布时间   tags 标签（可以给文章打多个标签）   categories 分类（文章归类）   正文内容（Markdown 语法）标题： 123# 一级标题## 二级标题##...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/my-blog/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/my-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">博主</div><div class="author-info-description">这是一个用 Hexo 搭建的个人博客</div><div class="site-data"><a href="/my-blog/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/my-blog/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/my-blog/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-Hexo%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">1. 为什么选择 Hexo？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%8D%9A%E5%AE%A2%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94"><span class="toc-number">3.</span> <span class="toc-text">2. 博客技术方案对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">4.</span> <span class="toc-text">3. 环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%AE%89%E8%A3%85-Node-js"><span class="toc-number">4.1.</span> <span class="toc-text">3.1 安装 Node.js</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%AE%89%E8%A3%85-Git"><span class="toc-number">4.2.</span> <span class="toc-text">3.2 安装 Git</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%B3%A8%E5%86%8C-GitHub-%E8%B4%A6%E5%8F%B7"><span class="toc-number">4.3.</span> <span class="toc-text">3.3 注册 GitHub 账号</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%89%E8%A3%85-Hexo"><span class="toc-number">5.</span> <span class="toc-text">4. 安装 Hexo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8D%9A%E5%AE%A2%E9%A1%B9%E7%9B%AE"><span class="toc-number">6.</span> <span class="toc-text">5. 初始化博客项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%88%9B%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">6.1.</span> <span class="toc-text">5.1 创建博客文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%BF%AE%E6%94%B9%E7%BD%91%E7%AB%99%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">6.2.</span> <span class="toc-text">5.2 修改网站基本信息</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%BB%E9%A2%98"><span class="toc-number">7.</span> <span class="toc-text">6. 安装和配置主题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98"><span class="toc-number">7.1.</span> <span class="toc-text">6.1 安装主题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E5%90%AF%E7%94%A8%E4%B8%BB%E9%A2%98"><span class="toc-number">7.2.</span> <span class="toc-text">6.2 启用主题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%94%A8-Hexo-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-number">8.</span> <span class="toc-text">7. 用 Hexo 写文章</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E6%96%87%E7%AB%A0%E5%AD%98%E6%94%BE%E5%9C%A8%E5%93%AA%E9%87%8C%EF%BC%9F"><span class="toc-number">8.1.</span> <span class="toc-text">7.1 文章存放在哪里？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E5%88%9B%E5%BB%BA%E6%96%B0%E6%96%87%E7%AB%A0"><span class="toc-number">8.2.</span> <span class="toc-text">7.2 创建新文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E6%96%87%E7%AB%A0%E6%A0%BC%E5%BC%8F"><span class="toc-number">8.3.</span> <span class="toc-text">7.3 文章格式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A0-%E5%A4%B4%E9%83%A8%E4%BF%A1%E6%81%AF%EF%BC%88YAML-Front-Matter%EF%BC%89"><span class="toc-number">8.3.1.</span> <span class="toc-text">① 头部信息（YAML Front Matter）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E2%91%A1-%E6%AD%A3%E6%96%87%E5%86%85%E5%AE%B9%EF%BC%88Markdown-%E8%AF%AD%E6%B3%95%EF%BC%89"><span class="toc-number">8.3.2.</span> <span class="toc-text">② 正文内容（Markdown 语法）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E6%B5%8F%E8%A7%88%E5%99%A8%E8%AE%BF%E9%97%AE"><span class="toc-number">8.4.</span> <span class="toc-text">8.2 浏览器访问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-%E5%81%9C%E6%AD%A2%E9%A2%84%E8%A7%88"><span class="toc-number">8.5.</span> <span class="toc-text">8.3 停止预览</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E9%83%A8%E7%BD%B2%E5%88%B0-GitHub-Pages"><span class="toc-number">9.</span> <span class="toc-text">9. 部署到 GitHub Pages</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E6%8F%92%E4%BB%B6"><span class="toc-number">9.1.</span> <span class="toc-text">9.1 安装部署插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-%E4%BF%AE%E6%94%B9%E9%83%A8%E7%BD%B2%E9%85%8D%E7%BD%AE"><span class="toc-number">9.2.</span> <span class="toc-text">9.2 修改部署配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-%E5%88%9B%E5%BB%BA-GitHub-%E4%BB%93%E5%BA%93"><span class="toc-number">9.3.</span> <span class="toc-text">9.3 创建 GitHub 仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-4-%E5%88%9D%E5%A7%8B%E5%8C%96-Git-%E5%B9%B6%E6%8E%A8%E9%80%81%E4%BB%A3%E7%A0%81"><span class="toc-number">9.4.</span> <span class="toc-text">9.4 初始化 Git 并推送代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-5-%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2"><span class="toc-number">9.5.</span> <span class="toc-text">9.5 部署博客</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-6-%E7%AD%89%E5%BE%85%E7%94%9F%E6%95%88"><span class="toc-number">9.6.</span> <span class="toc-text">9.6 等待生效</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E5%90%8E%E7%BB%AD%E7%BB%B4%E6%8A%A4%EF%BC%9A%E6%9B%B4%E6%96%B0%E5%8D%9A%E5%AE%A2"><span class="toc-number">10.</span> <span class="toc-text">10. 后续维护：更新博客</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-1-%E6%AF%8F%E6%AC%A1%E9%83%A8%E7%BD%B2%E4%BC%9A%E5%85%A8%E9%83%A8%E9%87%8D%E6%96%B0%E7%94%9F%E6%88%90%E5%90%97%EF%BC%9F"><span class="toc-number">10.1.</span> <span class="toc-text">10.1 每次部署会全部重新生成吗？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="toc-number">11.</span> <span class="toc-text">11. 常见问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Q1-hexo-%E5%91%BD%E4%BB%A4%E6%89%BE%E4%B8%8D%E5%88%B0%EF%BC%88%E2%80%99hexo%E2%80%99-%E4%B8%8D%E6%98%AF%E5%86%85%E9%83%A8%E6%88%96%E5%A4%96%E9%83%A8%E5%91%BD%E4%BB%A4%EF%BC%89"><span class="toc-number">11.1.</span> <span class="toc-text">Q1: hexo 命令找不到（’hexo’ 不是内部或外部命令）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q2-%E9%83%A8%E7%BD%B2%E5%A4%B1%E8%B4%A5%EF%BC%8C%E6%8F%90%E7%A4%BA%E6%97%A0%E6%B3%95%E8%BF%9E%E6%8E%A5-GitHub"><span class="toc-number">11.2.</span> <span class="toc-text">Q2: 部署失败，提示无法连接 GitHub</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q3-%E9%83%A8%E7%BD%B2%E6%88%90%E5%8A%9F%E4%BD%86%E8%AE%BF%E9%97%AE-404"><span class="toc-number">11.3.</span> <span class="toc-text">Q3: 部署成功但访问 404</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q4-%E5%8D%9A%E5%AE%A2%E9%87%8C%E6%B2%A1%E6%9C%89%E6%98%BE%E7%A4%BA%E6%96%B0%E6%96%87%E7%AB%A0"><span class="toc-number">11.4.</span> <span class="toc-text">Q4: 博客里没有显示新文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Q5-%E6%83%B3%E6%8D%A2%E4%B8%BB%E9%A2%98%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-number">11.5.</span> <span class="toc-text">Q5: 想换主题怎么办？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">12.</span> <span class="toc-text">结语</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/17/hexo-blog-tutorial/" title="零基础搭建免费博客：Hexo + GitHub Pages 完整教程">零基础搭建免费博客：Hexo + GitHub Pages 完整教程</a><time datetime="2026-06-17T08:00:00.000Z" title="发表于 2026-06-17 16:00:00">2026-06-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/17/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0Hexo%E5%86%99%E5%8D%9A%E5%AE%A2/" title="如何学习Hexo写博客">如何学习Hexo写博客</a><time datetime="2026-06-17T07:36:39.000Z" title="发表于 2026-06-17 15:36:39">2026-06-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/17/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/" title="我的第一篇博客文章">我的第一篇博客文章</a><time datetime="2026-06-17T06:18:32.000Z" title="发表于 2026-06-17 14:18:32">2026-06-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/17/hello-world/" title="Hello World">Hello World</a><time datetime="2026-06-17T06:15:00.335Z" title="发表于 2026-06-17 14:15:00">2026-06-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 博主</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.5</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/my-blog/js/utils.js?v=5.5.5"></script><script src="/my-blog/js/main.js?v=5.5.5"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
