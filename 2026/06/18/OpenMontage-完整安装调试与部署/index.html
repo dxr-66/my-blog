@@ -1,0 +1,1095 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>OpenMontage 完整安装调试与部署 | 我的个人博客</title><meta name="author" content="博主"><meta name="copyright" content="博主"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本教程面向零基础用户，手把手教你从零安装部署 OpenMontage，并基于实测经验给出最优方案选择建议。   目录 一、准备工作 二、安装基础软件 三、下载 OpenMontage 四、初始化项目 五、配置 Agnes API 六、集成 Agnes 到 OpenMontage 七、测试验证 八、部署方案选择与实测经验 九、日常使用流程 十、常见问题速查 十一、重要提醒 附录：案例模板   一、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenMontage 完整安装调试与部署">
+<meta property="og:url" content="https://dxr-66.github.io/my-blog/2026/06/18/OpenMontage-%E5%AE%8C%E6%95%B4%E5%AE%89%E8%A3%85%E8%B0%83%E8%AF%95%E4%B8%8E%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="我的个人博客">
+<meta property="og:description" content="本教程面向零基础用户，手把手教你从零安装部署 OpenMontage，并基于实测经验给出最优方案选择建议。   目录 一、准备工作 二、安装基础软件 三、下载 OpenMontage 四、初始化项目 五、配置 Agnes API 六、集成 Agnes 到 OpenMontage 七、测试验证 八、部署方案选择与实测经验 九、日常使用流程 十、常见问题速查 十一、重要提醒 附录：案例模板   一、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dxr-66.github.io/my-blog/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-06-18T12:43:10.000Z">
+<meta property="article:modified_time" content="2026-06-18T13:31:26.716Z">
+<meta property="article:author" content="博主">
+<meta property="article:tag" content="AI工具">
+<meta property="article:tag" content="OpenMontage">
+<meta property="article:tag" content="教程">
+<meta property="article:tag" content="视频制作">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dxr-66.github.io/my-blog/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "OpenMontage 完整安装调试与部署",
+  "url": "https://dxr-66.github.io/my-blog/2026/06/18/OpenMontage-%E5%AE%8C%E6%95%B4%E5%AE%89%E8%A3%85%E8%B0%83%E8%AF%95%E4%B8%8E%E9%83%A8%E7%BD%B2/",
+  "image": "https://dxr-66.github.io/my-blog/img/butterfly-icon.png",
+  "datePublished": "2026-06-18T12:43:10.000Z",
+  "dateModified": "2026-06-18T13:31:26.716Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "博主",
+      "url": "https://dxr-66.github.io/my-blog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/my-blog/img/favicon.png"><link rel="canonical" href="https://dxr-66.github.io/my-blog/2026/06/18/OpenMontage-%E5%AE%8C%E6%95%B4%E5%AE%89%E8%A3%85%E8%B0%83%E8%AF%95%E4%B8%8E%E9%83%A8%E7%BD%B2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/my-blog/css/index.css?v=5.5.5"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/my-blog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'OpenMontage 完整安装调试与部署',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/my-blog/"><span class="site-name">我的个人博客</span></a><a class="nav-page-title" href="/my-blog/"><span class="site-name">OpenMontage 完整安装调试与部署</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">OpenMontage 完整安装调试与部署</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-18T12:43:10.000Z" title="发表于 2026-06-18 20:43:10">2026-06-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-18T13:31:26.716Z" title="更新于 2026-06-18 21:31:26">2026-06-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>本教程面向零基础用户，手把手教你从零安装部署 OpenMontage，并基于实测经验给出最优方案选择建议。</p>
+</blockquote>
+<hr>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E4%B8%80%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">一、准备工作</a></li>
+<li><a href="#%E4%BA%8C%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E8%BD%AF%E4%BB%B6">二、安装基础软件</a></li>
+<li><a href="#%E4%B8%89%E4%B8%8B%E8%BD%BD-openmontage">三、下载 OpenMontage</a></li>
+<li><a href="#%E5%9B%9B%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE">四、初始化项目</a></li>
+<li><a href="#%E4%BA%94%E9%85%8D%E7%BD%AE-agnes-api">五、配置 Agnes API</a></li>
+<li><a href="#%E5%85%AD%E9%9B%86%E6%88%90-agnes-%E5%88%B0-openmontage">六、集成 Agnes 到 OpenMontage</a></li>
+<li><a href="#%E4%B8%83%E6%B5%8B%E8%AF%95%E9%AA%8C%E8%AF%81">七、测试验证</a></li>
+<li><a href="#%E5%85%AB%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9%E4%B8%8E%E5%AE%9E%E6%B5%8B%E7%BB%8F%E9%AA%8C">八、部署方案选择与实测经验</a></li>
+<li><a href="#%E4%B9%9D%E6%97%A5%E5%B8%B8%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B">九、日常使用流程</a></li>
+<li><a href="#%E5%8D%81%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5">十、常见问题速查</a></li>
+<li><a href="#%E5%8D%81%E4%B8%80%E9%87%8D%E8%A6%81%E6%8F%90%E9%86%92">十一、重要提醒</a></li>
+<li><a href="#%E9%99%84%E5%BD%95%E6%A1%88%E4%BE%8B%E6%A8%A1%E6%9D%BF">附录：案例模板</a></li>
+</ul>
+<hr>
+<h2 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h2><h3 id="你需要准备什么"><a href="#你需要准备什么" class="headerlink" title="你需要准备什么"></a>你需要准备什么</h3><ol>
+<li>一台 Windows 电脑（Mac 用户部分步骤不同，会标注）</li>
+<li>网络连接</li>
+<li>耐心（首次配置可能需要数小时，请预留充足时间）</li>
+<li>一个 Agnes API Key（免费注册，后面会讲）</li>
+</ol>
+<h3 id="提前了解的概念"><a href="#提前了解的概念" class="headerlink" title="提前了解的概念"></a>提前了解的概念</h3><table>
+<thead>
+<tr>
+<th>名词</th>
+<th>简单解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Git</td>
+<td>下载代码的工具</td>
+</tr>
+<tr>
+<td>Node.js</td>
+<td>运行 JavaScript 程序的环境</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>另一种编程语言环境</td>
+</tr>
+<tr>
+<td>FFmpeg</td>
+<td>处理视频的工具</td>
+</tr>
+<tr>
+<td>API Key</td>
+<td>像”密码”一样，让你能调用 Agnes 的服务</td>
+</tr>
+<tr>
+<td>.env 文件</td>
+<td>存放各种配置密码的文件</td>
+</tr>
+<tr>
+<td>Trea</td>
+<td>AI 编程助手，帮你写代码和执行命令</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、安装基础软件"><a href="#二、安装基础软件" class="headerlink" title="二、安装基础软件"></a>二、安装基础软件</h2><h3 id="步骤-1：安装-Git（下载代码用）"><a href="#步骤-1：安装-Git（下载代码用）" class="headerlink" title="步骤 1：安装 Git（下载代码用）"></a>步骤 1：安装 Git（下载代码用）</h3><p><strong>做什么</strong>：Git 是用来从 GitHub 下载 OpenMontage 代码的工具。</p>
+<p><strong>操作步骤</strong>：</p>
+<ol>
+<li>打开浏览器，访问：<a target="_blank" rel="noopener" href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></li>
+<li>点击下载按钮，下载安装包</li>
+<li>双击安装包，一路点击”Next”（全部默认设置即可）</li>
+<li>安装完成后，打开 Trea，输入：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git --version</span><br></pre></td></tr></table></figure>
+
+<p>如果显示类似 <code>git version 2.xxx</code>，说明安装成功。</p>
+<p><strong>预期输出</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git version 2.43.0.windows.1</span><br></pre></td></tr></table></figure>
+
+<h4 id="踩坑提醒"><a href="#踩坑提醒" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：安装时修改了默认路径</strong></p>
+<ul>
+<li>解决：建议保持默认路径 <code>C:\Program Files\Git</code>，不要改</li>
+</ul>
+</li>
+<li><p><strong>坑 2：安装时没勾选”Add to PATH”</strong></p>
+<ul>
+<li>解决：重新安装，确保勾选”Git from the command line…”</li>
+</ul>
+</li>
+<li><p><strong>坑 3：Trea 中输入 git 命令提示”不是内部命令”</strong></p>
+<ul>
+<li>解决：重启 Trea 或重启电脑，让环境变量生效</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="步骤-2：安装-Node-js（运行环境）"><a href="#步骤-2：安装-Node-js（运行环境）" class="headerlink" title="步骤 2：安装 Node.js（运行环境）"></a>步骤 2：安装 Node.js（运行环境）</h3><p><strong>做什么</strong>：Node.js 是运行 OpenMontage 程序的基础环境。</p>
+<p><strong>操作步骤</strong>：</p>
+<ol>
+<li>打开浏览器，访问：<a target="_blank" rel="noopener" href="https://nodejs.org/">https://nodejs.org</a></li>
+<li>点击大大的绿色”LTS”按钮下载（推荐长期支持版）</li>
+<li>双击安装包，一路点击”Next”（全部默认）</li>
+<li>安装完成后，在 Trea 中输入：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node --version</span><br></pre></td></tr></table></figure>
+
+<p>如果显示 <code>v20.xxx</code> 或 <code>v22.xxx</code>，说明成功（需要 18 以上）。</p>
+<p><strong>预期输出</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v20.11.0</span><br></pre></td></tr></table></figure>
+
+<h4 id="踩坑提醒-1"><a href="#踩坑提醒-1" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：下载了旧版本（v16 或更低）</strong></p>
+<ul>
+<li>解决：OpenMontage 需要 Node.js 18+，必须下载 LTS 版</li>
+</ul>
+</li>
+<li><p><strong>坑 2：安装路径有中文</strong></p>
+<ul>
+<li>解决：确保安装路径全是英文，如 <code>C:\Program Files\nodejs</code></li>
+</ul>
+</li>
+<li><p><strong>坑 3：Trea 中 node 命令无效</strong></p>
+<ul>
+<li>解决：重启 Trea，或手动添加环境变量</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="步骤-3：安装-Python（处理脚本用）"><a href="#步骤-3：安装-Python（处理脚本用）" class="headerlink" title="步骤 3：安装 Python（处理脚本用）"></a>步骤 3：安装 Python（处理脚本用）</h3><p><strong>做什么</strong>：OpenMontage 部分功能需要 Python 支持。</p>
+<p><strong>操作步骤</strong>：</p>
+<ol>
+<li>打开浏览器，访问：<a target="_blank" rel="noopener" href="https://www.python.org/downloads/">https://www.python.org/downloads/</a></li>
+<li>点击”Download Python 3.xxx”按钮</li>
+<li><strong>重要</strong>：安装时务必勾选”Add Python to PATH”</li>
+<li>点击”Install Now”</li>
+<li>安装完成后，在 Trea 中输入：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python --version</span><br></pre></td></tr></table></figure>
+
+<p>如果显示 <code>Python 3.10.x</code> 或更高，说明成功。</p>
+<p><strong>预期输出</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Python 3.12.0</span><br></pre></td></tr></table></figure>
+
+<h4 id="踩坑提醒-2"><a href="#踩坑提醒-2" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：忘记勾选”Add to PATH”</strong></p>
+<ul>
+<li>解决：重新安装，务必勾选！这是最常见的错误</li>
+</ul>
+</li>
+<li><p><strong>坑 2：安装了 Python 2.x</strong></p>
+<ul>
+<li>解决：OpenMontage 需要 Python 3.10+，必须卸载重装</li>
+</ul>
+</li>
+<li><p><strong>坑 3：多个 Python 版本冲突</strong></p>
+<ul>
+<li>解决：在 Trea 中使用 <code>python3</code> 命令代替 <code>python</code> 试试</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="步骤-4：安装-FFmpeg（视频处理核心）"><a href="#步骤-4：安装-FFmpeg（视频处理核心）" class="headerlink" title="步骤 4：安装 FFmpeg（视频处理核心）"></a>步骤 4：安装 FFmpeg（视频处理核心）</h3><p><strong>做什么</strong>：FFmpeg 是处理视频、音频的核心工具，OpenMontage 离不开它。</p>
+<p><strong>操作步骤</strong>：</p>
+<ol>
+<li>打开浏览器，访问：<a target="_blank" rel="noopener" href="https://www.gyan.dev/ffmpeg/builds/">https://www.gyan.dev/ffmpeg/builds/</a></li>
+<li>下载 <code>ffmpeg-release-essentials.7z</code> 文件</li>
+<li>解压到 <code>D:\ffmpeg</code>（或其他英文路径）</li>
+<li>将 <code>D:\ffmpeg\bin</code> 添加到系统环境变量 PATH 中：<ul>
+<li>右键”此电脑” → 属性 → 高级系统设置 → 环境变量</li>
+<li>找到 Path → 编辑 → 新建 → 输入 <code>D:\ffmpeg\bin</code></li>
+<li>确定保存</li>
+</ul>
+</li>
+<li>在 Trea 中输入：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -version</span><br></pre></td></tr></table></figure>
+
+<p>如果显示版本信息，说明成功。</p>
+<p><strong>预期输出</strong>（前3行）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg version 6.1.1-full_build-www.gyan.dev</span><br><span class="line">Copyright (c) 2000-2023 the FFmpeg developers</span><br><span class="line">built with gcc 12.2.0 (Rev10, Built by MSYS2 project)</span><br></pre></td></tr></table></figure>
+
+<h4 id="踩坑提醒-3"><a href="#踩坑提醒-3" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：下载了错误的版本（如 shared 版）</strong></p>
+<ul>
+<li>解决：一定要下载 <code>essentials</code> 版本</li>
+</ul>
+</li>
+<li><p><strong>坑 2：解压路径有中文或空格</strong></p>
+<ul>
+<li>解决：路径必须是纯英文，如 <code>D:\ffmpeg</code>，不要 <code>D:\我的工具\ffmpeg</code></li>
+</ul>
+</li>
+<li><p><strong>坑 3：环境变量添加错误</strong></p>
+<ul>
+<li>解决：确保添加的是 <code>bin</code> 文件夹路径，不是 ffmpeg 根目录</li>
+</ul>
+</li>
+<li><p><strong>坑 4：Trea 中提示找不到 ffmpeg</strong></p>
+<ul>
+<li>解决：重启 Trea 或重启电脑，环境变量修改后需要重启生效</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="三、下载-OpenMontage"><a href="#三、下载-OpenMontage" class="headerlink" title="三、下载 OpenMontage"></a>三、下载 OpenMontage</h2><h3 id="步骤-5：创建项目文件夹并下载代码"><a href="#步骤-5：创建项目文件夹并下载代码" class="headerlink" title="步骤 5：创建项目文件夹并下载代码"></a>步骤 5：创建项目文件夹并下载代码</h3><p><strong>操作步骤</strong>：</p>
+<ol>
+<li>在 D 盘创建一个文件夹：<code>D:\pytools\projects\MyVideoStudio</code></li>
+<li>在 Trea 中输入以下命令：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> D:\pytools\projects\MyVideoStudio</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/calesthio/OpenMontage.git</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>等待下载完成（约几分钟，取决于网速）</li>
+<li>下载完成后，进入项目目录：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> OpenMontage</span><br><span class="line"><span class="built_in">dir</span></span><br></pre></td></tr></table></figure>
+
+<p>应该能看到 <code>README.md</code>、<code>package.json</code> 等文件。</p>
+<h4 id="踩坑提醒-4"><a href="#踩坑提醒-4" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：git clone 提示”无法解析主机名”</strong></p>
+<ul>
+<li>解决：检查网络连接，或尝试使用代理&#x2F;VPN</li>
+</ul>
+</li>
+<li><p><strong>坑 2：下载速度极慢或中断</strong></p>
+<ul>
+<li>解决：多试几次，或更换网络环境</li>
+</ul>
+</li>
+<li><p><strong>坑 3：提示”destination path already exists”</strong></p>
+<ul>
+<li>解决：文件夹已存在，先删除旧的 OpenMontage 文件夹再重试</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="四、初始化项目"><a href="#四、初始化项目" class="headerlink" title="四、初始化项目"></a>四、初始化项目</h2><h3 id="步骤-6：安装项目依赖"><a href="#步骤-6：安装项目依赖" class="headerlink" title="步骤 6：安装项目依赖"></a>步骤 6：安装项目依赖</h3><p><strong>操作步骤</strong>：</p>
+<ol>
+<li>确保在 OpenMontage 目录下：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> D:\pytools\projects\MyVideoStudio\OpenMontage</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>运行安装命令：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>等待安装完成（可能需要 5-10 分钟，取决于网速）</li>
+<li>安装完成后，应该没有红色报错信息</li>
+</ol>
+<h4 id="踩坑提醒-5"><a href="#踩坑提醒-5" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：npm install 报错”Cannot find module”</strong></p>
+<ul>
+<li>解决：检查 Node.js 版本是否 18+，不够就升级</li>
+</ul>
+</li>
+<li><p><strong>坑 2：安装过程中卡住不动</strong></p>
+<ul>
+<li>解决：按 <code>Ctrl+C</code> 中断，重新运行 <code>npm install</code></li>
+</ul>
+</li>
+<li><p><strong>坑 3：提示权限不足</strong></p>
+<ul>
+<li>解决：以管理员身份运行 Trea，或在命令前加 <code>sudo</code>（Mac&#x2F;Linux）</li>
+</ul>
+</li>
+<li><p><strong>坑 4：网络超时</strong></p>
+<ul>
+<li>解决：设置 npm 镜像源：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm config <span class="built_in">set</span> registry https://registry.npmmirror.com</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="步骤-7：检查-make-命令"><a href="#步骤-7：检查-make-命令" class="headerlink" title="步骤 7：检查 make 命令"></a>步骤 7：检查 make 命令</h3><p><strong>做什么</strong>：OpenMontage 的初始化脚本可能用到 make 命令，Windows 默认没有。</p>
+<p><strong>操作步骤</strong>：</p>
+<ol>
+<li>在 Trea 中输入：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make --version</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>如果提示”不是内部命令”，说明没有 make</p>
+<ul>
+<li>不用慌，Windows 可以用 npm 命令替代</li>
+</ul>
+</li>
+<li><p>如果有 make 但报错，尝试运行：</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make setup</span><br></pre></td></tr></table></figure>
+
+<p>如果失败，改用：<code>npm install</code>（步骤6已经做了）</p>
+<h4 id="踩坑提醒-6"><a href="#踩坑提醒-6" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：Windows 用户纠结 make 命令</strong></p>
+<ul>
+<li>解决：Windows 不需要 make，<code>npm install</code> 就够了</li>
+</ul>
+</li>
+<li><p><strong>坑 2：Mac 用户没有 make</strong></p>
+<ul>
+<li>解决：安装 Xcode Command Line Tools：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcode-select --install</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、配置-Agnes-API"><a href="#五、配置-Agnes-API" class="headerlink" title="五、配置 Agnes API"></a>五、配置 Agnes API</h2><h3 id="步骤-8：注册-Agnes-账号并获取-API-Key"><a href="#步骤-8：注册-Agnes-账号并获取-API-Key" class="headerlink" title="步骤 8：注册 Agnes 账号并获取 API Key"></a>步骤 8：注册 Agnes 账号并获取 API Key</h3><p><strong>操作步骤</strong>：</p>
+<ol>
+<li>打开浏览器，访问：<a target="_blank" rel="noopener" href="https://platform.agnes-ai.com/">https://platform.agnes-ai.com</a></li>
+<li>点击”Sign Up”，用邮箱注册账号</li>
+<li>登录后，进入 API Keys 页面</li>
+<li>点击”Create Key”，复制生成的 Key（以 <code>sk-</code> 开头）</li>
+<li><strong>妥善保存，不要泄露给他人</strong></li>
+</ol>
+<h4 id="踩坑提醒-7"><a href="#踩坑提醒-7" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：注册后找不到 API Key 页面</strong></p>
+<ul>
+<li>解决：通常在 Dashboard 或 Settings 菜单下，找”API”或”Keys”</li>
+</ul>
+</li>
+<li><p><strong>坑 2：Key 复制不完整</strong></p>
+<ul>
+<li>解决：确保复制完整的 <code>sk-</code> 开头字符串，不要遗漏字符</li>
+</ul>
+</li>
+<li><p><strong>坑 3：Key 失效或过期</strong></p>
+<ul>
+<li>解决：重新生成一个新的 Key，更新到 <code>.env</code> 文件中</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="步骤-9：配置-env-文件"><a href="#步骤-9：配置-env-文件" class="headerlink" title="步骤 9：配置 .env 文件"></a>步骤 9：配置 .env 文件</h3><p><strong>操作步骤</strong>：</p>
+<ol>
+<li>在 OpenMontage 目录下，找到 <code>.env.example</code> 文件</li>
+<li>复制一份，重命名为 <code>.env</code></li>
+<li>用记事本打开 <code>.env</code> 文件</li>
+<li>添加或修改以下内容：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># === Agnes 全模态 API ===</span></span><br><span class="line">AGNES_API_KEY=sk-你的真实密钥（替换这里）</span><br><span class="line">AGNES_API_ENDPOINT=https://apihub.agnes-ai.com/v1</span><br><span class="line">AGNES_IMAGE_MODEL=agnes-image-2.1-flash</span><br><span class="line">AGNES_VIDEO_MODEL=agnes-video-v2.0</span><br><span class="line">AGNES_TEXT_MODEL=agnes-2.0-flash</span><br><span class="line"></span><br><span class="line"><span class="comment"># === Piper 本地 TTS（免费离线）===</span></span><br><span class="line">PIPER_ENABLED=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># === 免费背景音乐源 ===</span></span><br><span class="line">MUSIC_SOURCE=free_archive</span><br><span class="line"></span><br><span class="line"><span class="comment"># === 视频合成 ===</span></span><br><span class="line">REMOITION_ENABLED=<span class="literal">true</span></span><br><span class="line">FFMPEG_PATH=D:\\ffmpeg\\bin\\ffmpeg.exe</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>保存文件</li>
+</ol>
+<h4 id="踩坑提醒-8"><a href="#踩坑提醒-8" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：.env 文件格式错误</strong></p>
+<ul>
+<li>解决：确保没有空格，格式为 <code>KEY=VALUE</code>，不要加引号</li>
+</ul>
+</li>
+<li><p><strong>坑 2：FFmpeg 路径错误</strong></p>
+<ul>
+<li>解决：Windows 路径用双反斜杠 <code>\\</code>，如 <code>D:\\ffmpeg\\bin\\ffmpeg.exe</code></li>
+</ul>
+</li>
+<li><p><strong>坑 3：Key 包含空格或换行</strong></p>
+<ul>
+<li>解决：确保 <code>sk-</code> 后面直接跟字符，没有空格</li>
+</ul>
+</li>
+<li><p><strong>坑 4：已有 .env 文件，直接覆盖导致其他配置丢失</strong></p>
+<ul>
+<li>解决：先备份原文件，然后追加 Agnes 配置，不要全部替换</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="六、集成-Agnes-到-OpenMontage"><a href="#六、集成-Agnes-到-OpenMontage" class="headerlink" title="六、集成 Agnes 到 OpenMontage"></a>六、集成 Agnes 到 OpenMontage</h2><blockquote>
+<p><strong>重要说明</strong>：OpenMontage 原生不支持 Agnes provider。当前安装的 OpenMontage 仅原生支持：FAL &#x2F; Google &#x2F; ElevenLabs &#x2F; OpenAI &#x2F; xAI &#x2F; Doubao &#x2F; Suno &#x2F; HeyGen &#x2F; Runway &#x2F; Pexels &#x2F; Pixabay &#x2F; Unsplash。</p>
+<p>要让 <code>AGNES_API_KEY</code> 真正被 OpenMontage pipeline 使用，需要额外做以下之一：</p>
+<ol>
+<li>让 Agnes 通过 FAL 网关路由（如果 Agnes 已接入 fal.ai 生态）</li>
+<li>编写自定义 provider 工具（在 <code>tools/image_gen/</code> 和 <code>tools/video_gen/</code> 下添加 <code>agnes_image.py</code> 和 <code>agnes_video.py</code>）</li>
+<li>作为外部脚本调用（直接在 Python 脚本中读取环境变量发请求）</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="步骤-10：创建-Agnes-图像生成工具"><a href="#步骤-10：创建-Agnes-图像生成工具" class="headerlink" title="步骤 10：创建 Agnes 图像生成工具"></a>步骤 10：创建 Agnes 图像生成工具</h3><p>在 Trea 中输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">请帮我在 D:\pytools\projects\MyVideoStudio\OpenMontage 目录下，</span><br><span class="line">在 tools/image_gen/ 文件夹中创建 agnes_image.py 文件，</span><br><span class="line">实现 Agnes 图像生成功能。</span><br><span class="line"></span><br><span class="line">要求：</span><br><span class="line">1. 读取 .env 中的 AGNES_API_KEY 和 AGNES_API_ENDPOINT</span><br><span class="line">2. 调用 Agnes Image 2.1 Flash 模型</span><br><span class="line">3. 返回生成的图像文件路径</span><br><span class="line">4. 处理常见的 API 错误（如速率限制、网络超时）</span><br><span class="line"></span><br><span class="line">如果 tools/image_gen/ 目录不存在，请先创建。</span><br></pre></td></tr></table></figure>
+
+<h4 id="踩坑提醒-9"><a href="#踩坑提醒-9" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><strong>坑 1：Trea 说找不到 <code>tools/image_gen/</code> 目录</strong><ul>
+<li>解决：让 Trea 先创建目录，再创建文件</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="步骤-11：创建-Agnes-视频生成工具"><a href="#步骤-11：创建-Agnes-视频生成工具" class="headerlink" title="步骤 11：创建 Agnes 视频生成工具"></a>步骤 11：创建 Agnes 视频生成工具</h3><p>在 Trea 中输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">请帮我在 D:\pytools\projects\MyVideoStudio\OpenMontage 目录下，</span><br><span class="line">在 tools/video_gen/ 文件夹中创建 agnes_video.py 文件，</span><br><span class="line">实现 Agnes 视频生成功能。</span><br><span class="line"></span><br><span class="line">要求：</span><br><span class="line">1. 读取 .env 中的 AGNES_API_KEY 和 AGNES_API_ENDPOINT</span><br><span class="line">2. 调用 Agnes Video 2.0 模型</span><br><span class="line">3. 返回生成的视频文件路径</span><br><span class="line">4. 处理常见的 API 错误</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="步骤-12：注册-Agnes-工具"><a href="#步骤-12：注册-Agnes-工具" class="headerlink" title="步骤 12：注册 Agnes 工具"></a>步骤 12：注册 Agnes 工具</h3><p>在 Trea 中输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">请帮我在 D:\pytools\projects\MyVideoStudio\OpenMontage 目录下，</span><br><span class="line">修改 tool_registry.py 文件，注册刚才创建的 Agnes 工具：</span><br><span class="line">- agnes_image.py</span><br><span class="line">- agnes_video.py</span><br><span class="line"></span><br><span class="line">确保 OpenMontage 的 pipeline 能够识别和调用这两个工具。</span><br></pre></td></tr></table></figure>
+
+<h4 id="验证-Agnes-工具是否正确注册"><a href="#验证-Agnes-工具是否正确注册" class="headerlink" title="验证 Agnes 工具是否正确注册"></a>验证 Agnes 工具是否正确注册</h4><p>创建完成后，在 Trea 中输入以下命令验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&quot;from tools.image_gen.agnes_image import AgnesImageTool; print(&#x27;Agnes Image OK&#x27;)&quot;</span></span><br><span class="line">python -c <span class="string">&quot;from tools.video_gen.agnes_video import AgnesVideoTool; print(&#x27;Agnes Video OK&#x27;)&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果显示 <code>Agnes Image OK</code> 和 <code>Agnes Video OK</code>，说明注册成功。</p>
+<h4 id="踩坑提醒-10"><a href="#踩坑提醒-10" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：注册后 Agnes 工具仍不被识别</strong></p>
+<ul>
+<li>解决：检查 <code>tool_registry.py</code> 的导入路径是否正确</li>
+</ul>
+</li>
+<li><p><strong>坑 2：Agnes API 返回错误</strong></p>
+<ul>
+<li>解决：检查 API Key 是否有效，网络是否通畅</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="七、测试验证"><a href="#七、测试验证" class="headerlink" title="七、测试验证"></a>七、测试验证</h2><h3 id="步骤-13：测试-Agnes-API-连通性"><a href="#步骤-13：测试-Agnes-API-连通性" class="headerlink" title="步骤 13：测试 Agnes API 连通性"></a>步骤 13：测试 Agnes API 连通性</h3><p>在 Trea 中输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">请帮我测试 Agnes API 是否配置正确：</span><br><span class="line">1. 读取 .env 中的 AGNES_API_KEY</span><br><span class="line">2. 发送一个测试请求到 Agnes API</span><br><span class="line">3. 生成一张测试图片（如&quot;一只可爱的橘猫&quot;）</span><br><span class="line">4. 告诉我测试结果</span><br><span class="line"></span><br><span class="line">如果测试失败，请告诉我错误原因和解决方法。</span><br></pre></td></tr></table></figure>
+
+<h4 id="踩坑提醒-11"><a href="#踩坑提醒-11" class="headerlink" title="踩坑提醒"></a>踩坑提醒</h4><ul>
+<li><p><strong>坑 1：测试时提示”API Key 无效”</strong></p>
+<ul>
+<li>解决：重新检查 <code>.env</code> 文件中的 Key 是否正确</li>
+</ul>
+</li>
+<li><p><strong>坑 2：提示”Rate limit exceeded”</strong></p>
+<ul>
+<li>解决：免费 tier 限制 8 RPM，等待 1 分钟再试</li>
+</ul>
+</li>
+<li><p><strong>坑 3：网络超时</strong></p>
+<ul>
+<li>解决：检查网络连接，或稍后再试</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="步骤-14：制作第一个测试视频"><a href="#步骤-14：制作第一个测试视频" class="headerlink" title="步骤 14：制作第一个测试视频"></a>步骤 14：制作第一个测试视频</h3><p>在 Trea 中输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">请用 OpenMontage 制作一个 30 秒的测试视频：</span><br><span class="line">主题：OpenMontage 测试</span><br><span class="line">风格：扁平插画</span><br><span class="line">色调：科技蓝</span><br><span class="line">旁白：中文，Piper 本地 TTS</span><br><span class="line">字幕：中文字幕</span><br><span class="line">输出：MP4，720p（先测试低分辨率）</span><br><span class="line"></span><br><span class="line">如果成功，再尝试更高配置。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、部署方案选择与实测经验"><a href="#八、部署方案选择与实测经验" class="headerlink" title="八、部署方案选择与实测经验"></a>八、部署方案选择与实测经验</h2><blockquote>
+<p>本章节基于实测经验总结，帮助你选择最适合自己的方案。</p>
+</blockquote>
+<h3 id="方案一：完全零成本路径（真实影像素材-Piper-本地-TTS-免费音乐）"><a href="#方案一：完全零成本路径（真实影像素材-Piper-本地-TTS-免费音乐）" class="headerlink" title="方案一：完全零成本路径（真实影像素材 + Piper 本地 TTS + 免费音乐）"></a>方案一：完全零成本路径（真实影像素材 + Piper 本地 TTS + 免费音乐）</h3><p><strong>原理</strong>：</p>
+<ul>
+<li>图像：从 Pexels &#x2F; Pixabay &#x2F; Archive.org &#x2F; NASA 免费下载</li>
+<li>视频片段：从上述平台免费下载</li>
+<li>旁白：Piper 本地离线合成（完全免费）</li>
+<li>音乐：Free Music Archive &#x2F; Incompetech（免费）</li>
+<li>合成：Remotion + FFmpeg 本地渲染</li>
+</ul>
+<p><strong>成本</strong>：$0（完全免费）</p>
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li>纪录片、纪实风格视频</li>
+<li>历史事件回顾</li>
+<li>城市人文短片</li>
+<li>自然科普内容</li>
+<li>预算为零的个人创作者</li>
+</ul>
+<h4 id="实测经验"><a href="#实测经验" class="headerlink" title="实测经验"></a>实测经验</h4><p><strong>优点</strong>：</p>
+<ul>
+<li>完全免费，不花一分钱</li>
+<li>真实影像有历史感和真实感</li>
+<li>素材来源丰富（Pexels 有数百万免费素材）</li>
+</ul>
+<p><strong>缺点与踩坑</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>坑点</th>
+<th>说明</th>
+<th>严重程度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>下载速度极慢</td>
+<td>Pexels &#x2F; Pixabay 服务器在国外，国内下载速度 50-200KB&#x2F;s</td>
+<td>高</td>
+</tr>
+<tr>
+<td>文件大小不可控</td>
+<td>NASA 素材默认提供 4K 原始版本，单文件 1-2GB</td>
+<td>高</td>
+</tr>
+<tr>
+<td>素材风格不统一</td>
+<td>从多个平台下载的素材，色调、清晰度差异大</td>
+<td>中</td>
+</tr>
+<tr>
+<td>内容不可控</td>
+<td>搜索”太空”可能返回不相关的素材</td>
+<td>中</td>
+</tr>
+<tr>
+<td>API 速率限制</td>
+<td>Pexels 免费 API 每小时 200 请求</td>
+<td>低</td>
+</tr>
+</tbody></table>
+<p><strong>实测案例</strong>：制作”20世纪太空探索”90秒纪录片</p>
+<ul>
+<li>计划下载 8 张图像 + 4 段视频</li>
+<li>实际：NASA 4K 素材单文件 1.35GB，下载卡住</li>
+<li>总等待时间：&gt;30 分钟（仍未完成）</li>
+<li><strong>结论</strong>：免费方案”能用”但”不好用”</li>
+</ul>
+<p><strong>配置优化（如果坚持用）</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">MAX_RESOLUTION=1920x1080      <span class="comment"># 禁止下载 4K</span></span><br><span class="line">MAX_FILE_SIZE_MB=20           <span class="comment"># 单文件上限 20MB</span></span><br><span class="line">MAX_TOTAL_SIZE_MB=100         <span class="comment"># 总素材上限 100MB</span></span><br><span class="line">DOWNLOAD_TIMEOUT=30             <span class="comment"># 30秒超时</span></span><br><span class="line">MAX_RETRIES=3                   <span class="comment"># 失败重试 3 次</span></span><br><span class="line">PARALLEL_DOWNLOADS=1            <span class="comment"># 单线程下载</span></span><br><span class="line">SOURCE_PRIORITY=pexels,pixabay,archive_sd  <span class="comment"># 优先顺序</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>适合人群</strong>：</p>
+<ul>
+<li>网络环境好（有代理&#x2F;VPN）</li>
+<li>对下载速度不敏感</li>
+<li>需要真实历史影像</li>
+<li>愿意手动筛选素材</li>
+</ul>
+<hr>
+<h3 id="方案二：Agnes-全模态路径（Agnes-AI-生成所有素材-Piper-TTS-免费音乐）"><a href="#方案二：Agnes-全模态路径（Agnes-AI-生成所有素材-Piper-TTS-免费音乐）" class="headerlink" title="方案二：Agnes 全模态路径（Agnes AI 生成所有素材 + Piper TTS + 免费音乐）"></a>方案二：Agnes 全模态路径（Agnes AI 生成所有素材 + Piper TTS + 免费音乐）</h3><p><strong>原理</strong>：</p>
+<ul>
+<li>图像：Agnes Image 2.1 Flash 生成</li>
+<li>视频片段：Agnes Video 2.0 生成</li>
+<li>旁白：Piper 本地 TTS</li>
+<li>音乐：免费音乐库</li>
+<li>合成：Remotion + FFmpeg 本地渲染</li>
+</ul>
+<p><strong>成本</strong>：</p>
+<ul>
+<li>Agnes Image：~$0.03-0.15&#x2F;张（6张约 $0.2-0.9）</li>
+<li>Agnes Video：~$0.10&#x2F;段（4段约 $0.4）</li>
+<li>Piper：$0（本地免费）</li>
+<li>音乐：$0（免费库）</li>
+<li><strong>总计</strong>：约 $0.6-1.3&#x2F;条视频</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong>：Agnes 目前处于推广期，实际费用可能更低或免费，请以官网最新政策为准。</p>
+</blockquote>
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li>动画解说视频</li>
+<li>科幻&#x2F;概念视频</li>
+<li>教育动画</li>
+<li>产品演示</li>
+<li>需要风格统一的视频</li>
+</ul>
+<h4 id="实测经验-1"><a href="#实测经验-1" class="headerlink" title="实测经验"></a>实测经验</h4><p><strong>优点</strong>：</p>
+<ul>
+<li>零下载等待，素材即时生成</li>
+<li>风格完全统一，色调一致</li>
+<li>内容完全可控，想要啥画面就有啥</li>
+<li>文件大小可控（图像 2-5MB，视频 5-10MB）</li>
+<li>不受网络波动影响</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>需要 Agnes API Key（免费注册）</li>
+<li>有轻微成本（但极低）</li>
+<li>视频生成有速率限制（8 RPM）</li>
+<li>单次视频片段约 5 秒，长视频需要分段</li>
+</ul>
+<p><strong>实测案例</strong>：制作”区块链工作原理”90秒动画</p>
+<ul>
+<li>生成 6 张图像：约 2 分钟，$0.3</li>
+<li>生成 4 段视频：约 4 分钟，$0.4</li>
+<li>Piper 合成旁白：1 分钟，$0</li>
+<li>合成渲染：2 分钟</li>
+<li><strong>总计</strong>：9 分钟，$0.7</li>
+<li><strong>结论</strong>：速度快、质量高、成本可接受</li>
+</ul>
+<p><strong>适合人群</strong>：</p>
+<ul>
+<li>追求效率，不想等待下载</li>
+<li>需要风格统一的商业&#x2F;教育内容</li>
+<li>愿意支付极低成本换取体验</li>
+<li>网络环境一般</li>
+</ul>
+<hr>
+<h3 id="方案三：商业-API-混合路径（FLUX-Kling-ElevenLabs-等付费服务）"><a href="#方案三：商业-API-混合路径（FLUX-Kling-ElevenLabs-等付费服务）" class="headerlink" title="方案三：商业 API 混合路径（FLUX&#x2F;Kling&#x2F;ElevenLabs 等付费服务）"></a>方案三：商业 API 混合路径（FLUX&#x2F;Kling&#x2F;ElevenLabs 等付费服务）</h3><p><strong>原理</strong>：</p>
+<ul>
+<li>图像：FLUX via Replicate &#x2F; Midjourney</li>
+<li>视频：Kling &#x2F; Runway &#x2F; Pika</li>
+<li>旁白：ElevenLabs（高质量）</li>
+<li>音乐：Udio &#x2F; Suno（AI生成）</li>
+<li>合成：Remotion + FFmpeg</li>
+</ul>
+<p><strong>成本</strong>：</p>
+<ul>
+<li>图像：$0.5-2&#x2F;张</li>
+<li>视频：$1-5&#x2F;段</li>
+<li>旁白：$0.1-0.5</li>
+<li>音乐：$0.2-1</li>
+<li><strong>总计</strong>：$3-10&#x2F;条视频</li>
+</ul>
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li>商业广告</li>
+<li>精品内容</li>
+<li>对质量要求极高的项目</li>
+<li>有预算的专业团队</li>
+</ul>
+<h4 id="实测经验-2"><a href="#实测经验-2" class="headerlink" title="实测经验"></a>实测经验</h4><p><strong>优点</strong>：</p>
+<ul>
+<li>质量最高（FLUX 图像、ElevenLabs 语音都是顶级）</li>
+<li>可控性最强</li>
+<li>适合商业交付</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>成本高，不适合个人频繁使用</li>
+<li>需要多个平台账号和密钥</li>
+<li>管理复杂（多个 API、多个账单）</li>
+</ul>
+<p><strong>适合人群</strong>：</p>
+<ul>
+<li>专业视频制作团队</li>
+<li>有明确预算的商业项目</li>
+<li>对质量极度敏感</li>
+</ul>
+<hr>
+<h3 id="方案四：混合方案（推荐）"><a href="#方案四：混合方案（推荐）" class="headerlink" title="方案四：混合方案（推荐）"></a>方案四：混合方案（推荐）</h3><p><strong>原理</strong>：</p>
+<ul>
+<li>图像：Pexels &#x2F; Pixabay 免费下载（文件小、速度快）</li>
+<li>视频片段：Agnes Video 2.0 生成（避免下载大文件）</li>
+<li>旁白：Piper 本地 TTS</li>
+<li>音乐：免费音乐库</li>
+<li>合成：Remotion + FFmpeg</li>
+</ul>
+<p><strong>成本</strong>：</p>
+<ul>
+<li>图像：$0（Pexels&#x2F;Pixabay 免费）</li>
+<li>视频：~$0.4（Agnes 4段）</li>
+<li>旁白：$0（Piper 免费）</li>
+<li>音乐：$0（免费库）</li>
+<li><strong>总计</strong>：约 $0.4&#x2F;条视频</li>
+</ul>
+<p><strong>适用场景</strong>：</p>
+<ul>
+<li>所有通用场景（最平衡的方案）</li>
+<li>教程视频</li>
+<li>社交媒体内容</li>
+<li>播客视频</li>
+<li>个人创作</li>
+</ul>
+<hr>
+<h4 id="为什么推荐混合方案？——实测逻辑"><a href="#为什么推荐混合方案？——实测逻辑" class="headerlink" title="为什么推荐混合方案？——实测逻辑"></a>为什么推荐混合方案？——实测逻辑</h4><p>经过对四种方案的实测对比，混合方案是最优解：</p>
+<p><strong>对比维度分析</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>方案一零成本</th>
+<th>方案二Agnes全模态</th>
+<th>方案三商业API</th>
+<th>方案四混合</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>成本</td>
+<td>$0</td>
+<td>$0.6-1.3</td>
+<td>$3-10</td>
+<td>$0.4</td>
+</tr>
+<tr>
+<td>速度</td>
+<td>极慢（下载等待）</td>
+<td>快</td>
+<td>快</td>
+<td>快</td>
+</tr>
+<tr>
+<td>质量</td>
+<td>中（依赖素材质量）</td>
+<td>高（AI生成）</td>
+<td>极高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>可控性</td>
+<td>低</td>
+<td>高</td>
+<td>极高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>风格统一</td>
+<td>差</td>
+<td>优</td>
+<td>优</td>
+<td>良</td>
+</tr>
+<tr>
+<td>网络依赖</td>
+<td>高（国外服务器）</td>
+<td>中（Agnes API）</td>
+<td>高（多平台）</td>
+<td>低</td>
+</tr>
+<tr>
+<td>复杂度</td>
+<td>中</td>
+<td>低</td>
+<td>高</td>
+<td>低</td>
+</tr>
+<tr>
+<td>适合小白</td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<p><strong>混合方案的核心优势</strong>：</p>
+<ol>
+<li><p><strong>“扬长避短”的素材策略</strong></p>
+<ul>
+<li>图像用免费下载：Pexels&#x2F;Pixabay 的图像文件小（2-5MB）、下载快、质量高</li>
+<li>视频用 Agnes 生成：避免下载大文件，风格统一，内容可控</li>
+<li>旁白用 Piper：完全免费，本地运行，隐私安全</li>
+</ul>
+</li>
+<li><p><strong>成本最低的可行方案</strong></p>
+<ul>
+<li>比纯免费方案多花 $0.4，但节省 30 分钟以上等待时间</li>
+<li>时间成本 &gt; 金钱成本（尤其对新手）</li>
+</ul>
+</li>
+<li><p><strong>稳定性最好</strong></p>
+<ul>
+<li>不依赖单一来源</li>
+<li>图像下载失败可 fallback 到 Agnes Image</li>
+<li>Agnes 失败可用本地素材替代</li>
+</ul>
+</li>
+<li><p><strong>学习曲线最平缓</strong></p>
+<ul>
+<li>不需要处理复杂的下载配置</li>
+<li>不需要管理多个商业 API</li>
+<li>出错概率最低</li>
+</ul>
+</li>
+</ol>
+<p><strong>实测案例：混合方案制作”20世纪太空探索”</strong>：</p>
+<ul>
+<li>图像：Pexels 搜索 “space rocket”、”astronaut”（8张，约 20MB，下载 1-2 分钟）</li>
+<li>视频：Agnes Video 生成 4 段 5 秒太空场景（约 3 分钟，$0.4）</li>
+<li>旁白：Piper 中文男声（1 分钟）</li>
+<li>音乐：Free Music Archive 史诗风格（30 秒下载）</li>
+<li>合成：Remotion + FFmpeg（2 分钟）</li>
+</ul>
+<p><strong>结果</strong>：</p>
+<ul>
+<li>总时间：8-10 分钟</li>
+<li>总成本：$0.4</li>
+<li>文件大小：输出约 50MB</li>
+<li>体验：流畅无卡顿，无需等待大文件下载</li>
+</ul>
+<p><strong>混合方案的 fallback 机制</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">图像下载流程：</span><br><span class="line">Pexels → 成功？→ 是 → 使用</span><br><span class="line">    ↓ 失败/超时</span><br><span class="line">Pixabay → 成功？→ 是 → 使用</span><br><span class="line">    ↓ 失败</span><br><span class="line">Agnes Image → 成功？→ 是 → 使用</span><br><span class="line">    ↓ 失败</span><br><span class="line">本地默认素材 → 使用</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="方案选择决策树"><a href="#方案选择决策树" class="headerlink" title="方案选择决策树"></a>方案选择决策树</h3><p><strong>Q1: 你的预算是？</strong></p>
+<ul>
+<li>$0 → 方案一 或 方案四（混合约$0.4也接近零）</li>
+<li>$0-1&#x2F;条 → 方案四（推荐）</li>
+<li>$1-5&#x2F;条 → 方案二</li>
+<li>$5+&#x2F;条 → 方案三</li>
+</ul>
+<p><strong>Q2: 你的网络环境？</strong></p>
+<ul>
+<li>很好（有代理&#x2F;VPN，国外网站快）→ 方案一 可行</li>
+<li>一般（偶尔卡顿）→ 方案四（推荐）</li>
+<li>较差 → 方案二 或 方案四</li>
+</ul>
+<p><strong>Q3: 你对等待时间的容忍度？</strong></p>
+<ul>
+<li>可以等 30 分钟+ → 方案一</li>
+<li>希望 10-15 分钟完成 → 方案四（推荐）</li>
+<li>希望 5-10 分钟完成 → 方案二</li>
+</ul>
+<p><strong>Q4: 你需要真实历史影像吗？</strong></p>
+<ul>
+<li>必须真实（如历史纪录片）→ 方案一（优化配置）</li>
+<li>可以接受 AI 生成 → 方案二 或 方案四</li>
+</ul>
+<p><strong>Q5: 你是技术小白吗？</strong></p>
+<ul>
+<li>是 → 方案四（推荐，出错最少）</li>
+<li>有一定技术能力 → 任意方案</li>
+</ul>
+<hr>
+<h2 id="九、日常使用流程"><a href="#九、日常使用流程" class="headerlink" title="九、日常使用流程"></a>九、日常使用流程</h2><h3 id="制作视频的固定流程"><a href="#制作视频的固定流程" class="headerlink" title="制作视频的固定流程"></a>制作视频的固定流程</h3><ol>
+<li>打开 Trea</li>
+<li>确认在项目目录：<code>cd D:\pytools\projects\MyVideoStudio\OpenMontage</code></li>
+<li>复制案例模板，修改主题和参数</li>
+<li>发送给 Trea</li>
+<li>Trea 展示计划 → 回复”确认”</li>
+<li>等待制作完成（混合方案约 8-12 分钟）</li>
+<li>在 <code>output/</code> 目录查看成品</li>
+</ol>
+<h3 id="混合方案专用提示词模板"><a href="#混合方案专用提示词模板" class="headerlink" title="混合方案专用提示词模板"></a>混合方案专用提示词模板</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">请用混合方案制作视频：</span><br><span class="line"></span><br><span class="line">【图像素材】</span><br><span class="line">- 来源：Pexels / Pixabay</span><br><span class="line">- 限制：最高 1920x1080，单个 &lt; 5MB</span><br><span class="line">- 数量：6-8 张</span><br><span class="line">- 超时：20 秒，失败 fallback 到 Agnes Image</span><br><span class="line"></span><br><span class="line">【视频片段】</span><br><span class="line">- 来源：Agnes Video 2.0</span><br><span class="line">- 规格：每段 5 秒，共 4-6 段</span><br><span class="line">- 风格：与图像统一</span><br><span class="line"></span><br><span class="line">【旁白】</span><br><span class="line">- 来源：Piper 本地 TTS</span><br><span class="line">- 语言：中文</span><br><span class="line">- 声音：男声沉稳</span><br><span class="line"></span><br><span class="line">【音乐】</span><br><span class="line">- 来源：Free Music Archive</span><br><span class="line">- 风格：[轻科技/史诗/舒缓/电子]</span><br><span class="line"></span><br><span class="line">【输出】</span><br><span class="line">- 格式：MP4</span><br><span class="line">- 分辨率：1080p</span><br><span class="line">- 字幕：中文</span><br><span class="line"></span><br><span class="line">主题：[你的主题]</span><br><span class="line">时长：[XX] 秒</span><br><span class="line"></span><br><span class="line">请先展示计划，我确认后开始。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十、常见问题速查"><a href="#十、常见问题速查" class="headerlink" title="十、常见问题速查"></a>十、常见问题速查</h2><table>
+<thead>
+<tr>
+<th>问题现象</th>
+<th>可能原因</th>
+<th>解决方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>git 命令无效</td>
+<td>未安装或未加 PATH</td>
+<td>重装 Git，勾选 PATH</td>
+</tr>
+<tr>
+<td>node 命令无效</td>
+<td>未安装或版本低</td>
+<td>安装 Node.js 18+</td>
+</tr>
+<tr>
+<td>python 命令无效</td>
+<td>未加 PATH</td>
+<td>重装 Python，勾选 PATH</td>
+</tr>
+<tr>
+<td>ffmpeg 命令无效</td>
+<td>未加环境变量</td>
+<td>添加 bin 目录到 PATH</td>
+</tr>
+<tr>
+<td>npm install 失败</td>
+<td>网络问题</td>
+<td>换 npm 镜像源</td>
+</tr>
+<tr>
+<td>Agnes API 报错</td>
+<td>Key 错误或超限</td>
+<td>检查 Key，等待重试</td>
+</tr>
+<tr>
+<td>视频渲染失败</td>
+<td>FFmpeg 问题</td>
+<td>检查路径和版本</td>
+</tr>
+<tr>
+<td>找不到输出文件</td>
+<td>路径错误</td>
+<td>检查 output&#x2F; 目录</td>
+</tr>
+<tr>
+<td>Piper 无中文</td>
+<td>缺少中文模型</td>
+<td>让 Trea 下载 zh_CN 模型</td>
+</tr>
+<tr>
+<td>制作到一半卡住</td>
+<td>内存&#x2F;CPU不足</td>
+<td>关闭其他程序，降低分辨率</td>
+</tr>
+<tr>
+<td>下载速度极慢</td>
+<td>国外服务器</td>
+<td>切换素材源或改用 Agnes 生成</td>
+</tr>
+<tr>
+<td>下载文件过大</td>
+<td>未限制分辨率</td>
+<td>添加 MAX_RESOLUTION&#x3D;1920x1080</td>
+</tr>
+<tr>
+<td>素材风格不统一</td>
+<td>多平台混合</td>
+<td>统一用 Agnes 生成，或后期调色</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十一、重要提醒"><a href="#十一、重要提醒" class="headerlink" title="十一、重要提醒"></a>十一、重要提醒</h2><h3 id="安全提醒"><a href="#安全提醒" class="headerlink" title="安全提醒"></a>安全提醒</h3><ul>
+<li>API Key 不要泄露，不要上传到公开平台</li>
+<li>.env 文件不要提交到 GitHub</li>
+<li>免费 tier 有速率限制，不要频繁调用</li>
+</ul>
+<h3 id="成本提醒"><a href="#成本提醒" class="headerlink" title="成本提醒"></a>成本提醒</h3><ul>
+<li>Agnes 目前处于推广期，实际费用可能更低或免费，请以官网最新政策为准</li>
+<li>Piper 完全免费，本地运行</li>
+<li>免费素材库完全免费</li>
+<li>如需商业 API（ElevenLabs 等），注意控制预算</li>
+</ul>
+<h3 id="备份提醒"><a href="#备份提醒" class="headerlink" title="备份提醒"></a>备份提醒</h3><ul>
+<li>重要的 .env 文件做好备份</li>
+<li>成品视频及时保存到其他位置</li>
+<li>项目配置可以复制到新电脑使用</li>
+</ul>
+<h3 id="版本提醒"><a href="#版本提醒" class="headerlink" title="版本提醒"></a>版本提醒</h3><ul>
+<li>本教程基于 2026-06-18 的 OpenMontage 版本</li>
+<li>后续版本可能有变化，请关注官方更新</li>
+</ul>
+<hr>
+<h2 id="附录：案例模板"><a href="#附录：案例模板" class="headerlink" title="附录：案例模板"></a>附录：案例模板</h2><h3 id="案例-1：纪录片风格-—-“20世纪太空探索”（混合方案）"><a href="#案例-1：纪录片风格-—-“20世纪太空探索”（混合方案）" class="headerlink" title="案例 1：纪录片风格 — “20世纪太空探索”（混合方案）"></a>案例 1：纪录片风格 — “20世纪太空探索”（混合方案）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">请用混合方案制作一个 90 秒的纪录片蒙太奇视频。</span><br><span class="line"></span><br><span class="line">主题：20世纪太空探索</span><br><span class="line">风格：复古纪录片</span><br><span class="line">色调：黑白+暖黄复古</span><br><span class="line">节奏：缓慢沉稳</span><br><span class="line"></span><br><span class="line">图像素材：</span><br><span class="line">- Pexels/Pixabay 搜索 &quot;space rocket 1960s&quot;、&quot;astronaut vintage&quot;</span><br><span class="line">- 限制 1080p，&lt;5MB/张，共 8 张</span><br><span class="line">- 失败 fallback 到 Agnes Image</span><br><span class="line"></span><br><span class="line">视频片段：</span><br><span class="line">- Agnes Video 生成 4 段 5 秒太空场景</span><br><span class="line">- 火箭发射、舱内画面、太空行走、返回舱</span><br><span class="line"></span><br><span class="line">旁白：中文，Piper 男声沉稳</span><br><span class="line">音乐：Free Music Archive 史诗大气</span><br><span class="line">字幕：中文，白色黑边</span><br><span class="line">输出：1080p MP4</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例-2：城市人文-—-“雨中的上海”（混合方案）"><a href="#案例-2：城市人文-—-“雨中的上海”（混合方案）" class="headerlink" title="案例 2：城市人文 — “雨中的上海”（混合方案）"></a>案例 2：城市人文 — “雨中的上海”（混合方案）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">请用混合方案制作一个 60 秒城市人文短片。</span><br><span class="line"></span><br><span class="line">主题：雨中的上海</span><br><span class="line">风格：电影感纪录片</span><br><span class="line">色调：低饱和蓝灰</span><br><span class="line">节奏：张弛有度</span><br><span class="line"></span><br><span class="line">图像素材：</span><br><span class="line">- Pexels 搜索 &quot;Shanghai rain&quot;、&quot;neon rain&quot;、&quot;umbrella street&quot;</span><br><span class="line">- 限制 1080p，&lt;5MB/张</span><br><span class="line"></span><br><span class="line">视频片段：</span><br><span class="line">- Agnes Video 生成 3 段 5 秒雨景动态</span><br><span class="line">- 雨滴、霓虹反射、行人撑伞</span><br><span class="line"></span><br><span class="line">旁白：无旁白，纯画面+音乐</span><br><span class="line">音乐：Incompetech 忧郁钢琴</span><br><span class="line">字幕：无</span><br><span class="line">输出：1080p MP4</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例-3：科技解说-—-“区块链工作原理”（Agnes全模态）"><a href="#案例-3：科技解说-—-“区块链工作原理”（Agnes全模态）" class="headerlink" title="案例 3：科技解说 — “区块链工作原理”（Agnes全模态）"></a>案例 3：科技解说 — “区块链工作原理”（Agnes全模态）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">请用 Agnes 全模态方案制作一个 90 秒动画解说视频。</span><br><span class="line"></span><br><span class="line">主题：区块链工作原理</span><br><span class="line">风格：扁平插画</span><br><span class="line">色调：科技蓝</span><br><span class="line">节奏：中等</span><br><span class="line"></span><br><span class="line">图像：Agnes Image 生成 6 张</span><br><span class="line">- 中心化银行、去中心化网络、区块链、挖矿、智能合约</span><br><span class="line"></span><br><span class="line">视频：Agnes Video 生成 4 段 5 秒动态</span><br><span class="line">旁白：Piper 中文男声</span><br><span class="line">音乐：轻科技</span><br><span class="line">字幕：中文</span><br><span class="line">输出：1080p MP4</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例-4：未来科幻-—-“2050年的城市生活”（Agnes全模态）"><a href="#案例-4：未来科幻-—-“2050年的城市生活”（Agnes全模态）" class="headerlink" title="案例 4：未来科幻 — “2050年的城市生活”（Agnes全模态）"></a>案例 4：未来科幻 — “2050年的城市生活”（Agnes全模态）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">请用 Agnes 全模态方案制作一个 60 秒科幻概念视频。</span><br><span class="line"></span><br><span class="line">主题：2050年的城市生活</span><br><span class="line">风格：赛博朋克+极简未来</span><br><span class="line">色调：紫罗兰+霓虹蓝</span><br><span class="line">节奏：快节奏</span><br><span class="line"></span><br><span class="line">图像：Agnes Image 生成 6 张</span><br><span class="line">- 飞行汽车、全息广告、AI机器人、垂直农场</span><br><span class="line"></span><br><span class="line">视频：Agnes Video 生成 4 段 5 秒动态</span><br><span class="line">旁白：Piper 中文活泼男声</span><br><span class="line">音乐：电子节奏</span><br><span class="line">字幕：中文大字幕</span><br><span class="line">输出：1080p MP4</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例-5：教育动画-—-“光合作用的过程”（混合方案）"><a href="#案例-5：教育动画-—-“光合作用的过程”（混合方案）" class="headerlink" title="案例 5：教育动画 — “光合作用的过程”（混合方案）"></a>案例 5：教育动画 — “光合作用的过程”（混合方案）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">请用混合方案制作一个 120 秒教育动画。</span><br><span class="line"></span><br><span class="line">主题：光合作用的过程</span><br><span class="line">风格：手绘涂鸦+科学示意</span><br><span class="line">色调：清新绿+阳光黄</span><br><span class="line">节奏：慢节奏</span><br><span class="line"></span><br><span class="line">图像：Pexels/Pixabay 搜索 &quot;plant cell&quot;、&quot;chlorophyll&quot;、&quot;sunlight leaf&quot;</span><br><span class="line">- 限制 1080p，&lt;5MB/张，共 6 张</span><br><span class="line">- 不足部分用 Agnes Image 补充</span><br><span class="line"></span><br><span class="line">视频：Agnes Video 生成 4 段 5 秒动态</span><br><span class="line">- 阳光粒子、分子运动、水运输</span><br><span class="line"></span><br><span class="line">旁白：Piper 中文女声温柔</span><br><span class="line">音乐：舒缓钢琴</span><br><span class="line">字幕：中文，术语高亮</span><br><span class="line">输出：1080p MP4</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例-6：自然科普-—-“蜜蜂的舞蹈语言”（零成本方案）"><a href="#案例-6：自然科普-—-“蜜蜂的舞蹈语言”（零成本方案）" class="headerlink" title="案例 6：自然科普 — “蜜蜂的舞蹈语言”（零成本方案）"></a>案例 6：自然科普 — “蜜蜂的舞蹈语言”（零成本方案）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">请用完全零成本路径制作一个 75 秒科普视频。</span><br><span class="line"></span><br><span class="line">主题：蜜蜂如何通过舞蹈传递信息</span><br><span class="line">风格：扁平插画</span><br><span class="line">色调：清新绿+暖黄</span><br><span class="line">节奏：中等</span><br><span class="line"></span><br><span class="line">图像：Pixabay/Pexels 搜索 &quot;bee&quot;、&quot;honeycomb&quot;、&quot;flower field&quot;</span><br><span class="line">- 限制 1080p，&lt;5MB/张</span><br><span class="line"></span><br><span class="line">视频：Pixabay 搜索 &quot;bee close up&quot;、&quot;beehive&quot;</span><br><span class="line">- 限制 720p，&lt;10MB/段，共 3 段</span><br><span class="line"></span><br><span class="line">旁白：Piper 中文女声温柔</span><br><span class="line">音乐：Free Music Archive 轻科技</span><br><span class="line">字幕：中文</span><br><span class="line">输出：1080p MP4</span><br></pre></td></tr></table></figure>
+
+<hr>
+<blockquote>
+<p><strong>结语</strong></p>
+<p>OpenMontage 是一个强大的视频制作工具，但”工具的价值在于使用”。</p>
+<p>对于非技术人员，我们的建议是：</p>
+<ol>
+<li>先跑通：用混合方案做出第一个视频</li>
+<li>再优化：根据需求调整方案（更省钱或更高质量）</li>
+<li>最后精通：理解每个参数，自定义流程</li>
+</ol>
+<p>记住：</p>
+<ul>
+<li>完成比完美更重要</li>
+<li>混合方案是最平衡的起点</li>
+<li>遇到问题先查第十部分的速查表</li>
+<li>还是解决不了，把错误信息复制给 Trea</li>
+</ul>
+<p>祝你制作愉快！</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://dxr-66.github.io/my-blog">博主</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dxr-66.github.io/my-blog/2026/06/18/OpenMontage-%E5%AE%8C%E6%95%B4%E5%AE%89%E8%A3%85%E8%B0%83%E8%AF%95%E4%B8%8E%E9%83%A8%E7%BD%B2/">https://dxr-66.github.io/my-blog/2026/06/18/OpenMontage-%E5%AE%8C%E6%95%B4%E5%AE%89%E8%A3%85%E8%B0%83%E8%AF%95%E4%B8%8E%E9%83%A8%E7%BD%B2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dxr-66.github.io/my-blog" target="_blank">我的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/my-blog/tags/%E6%95%99%E7%A8%8B/">教程</a><a class="post-meta__tags" href="/my-blog/tags/OpenMontage/">OpenMontage</a><a class="post-meta__tags" href="/my-blog/tags/%E8%A7%86%E9%A2%91%E5%88%B6%E4%BD%9C/">视频制作</a><a class="post-meta__tags" href="/my-blog/tags/AI%E5%B7%A5%E5%85%B7/">AI工具</a></div><div class="post-share"><div class="social-share" data-image="/my-blog/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/my-blog/2026/06/18/test/" title="测试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">测试</div></div><div class="info-2"><div class="info-item-1">这是一篇测试文章。 </div></div></div></a><a class="pagination-related  no-desc" href="/my-blog/2026/06/17/paddleocr-local/" title="paddleocr-local"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">paddleocr-local</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/my-blog/2026/06/17/hexo-blog-tutorial/" title="零基础搭建免费博客：Hexo + GitHub Pages 完整教程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-17</div><div class="info-item-2">零基础搭建免费博客：Hexo + GitHub Pages 完整教程</div></div><div class="info-2"><div class="info-item-1"> 本教程面向零基础用户，手把手教你用 Hexo 搭建个人博客并免费部署到 GitHub Pages。即使你不懂代码，跟着步骤也能完成。   目录 为什么选择 Hexo？ 博客技术方案对比 环境准备 安装 Hexo 初始化博客项目 安装和配置主题 用 Hexo 写文章 本地预览 部署到 GitHub Pages 后续维护：更新博客 常见问题   1. 为什么选择 Hexo？市面上有很多博客方案，从零代码平台到纯手写网页都有。Hexo 的优势在于：  完全免费：不需要服务器、不需要数据库 无需后端运维：没有数据库、没有后台管理、没有安全风险 速度快：生成纯静态 HTML 页面，加载速度极快 专注写作：用 Markdown 格式写文章，无需关注排版 主题丰富：几百款精美主题，一键切换 部署简单：推送到 GitHub 即可自动发布   2. 博客技术方案对比   方案 适合人群 优点 缺点 费用    Hexo &#x2F; Hugo &#x2F; Jekyll 技术爱好者、开发者 免费、快速、可控 需要学习基础命令 免费   WordPress 追求功能丰富的用户 插件多、功能强大 需...</div></div></div></a><a class="pagination-related" href="/my-blog/2026/06/17/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2%E6%96%87%E7%AB%A0/" title="我的第一篇博客文章"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-17</div><div class="info-item-2">我的第一篇博客文章</div></div><div class="info-2"><div class="info-item-1">欢迎来到我的博客！这是我的第一篇博客文章，使用 Hexo 搭建。 为什么写博客？写博客有很多好处：  📝 记录学习笔记，方便日后回顾 🚀 分享技术经验，帮助更多人 💡 锻炼写作能力，理清思路 🌐 建立个人品牌，展示专业能力  关于 HexoHexo 是一个快速、简洁且高效的博客框架。它使用 Markdown 解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 主要特点：  极速生成：数百篇文章也能在几秒内生成 支持 Markdown：专注写作，无需关注排版 丰富的主题生态：几百款主题任你选择 一键部署：推送到 GitHub 即可自动发布  代码示例1console.log(&quot;Hello, Hexo Blog!&quot;);  123def hello_blog():    print(&quot;欢迎来到我的博客！&quot;)    return &quot;success&quot;  感谢阅读如果你也想搭建自己的博客，欢迎留言交流！🎉 </div></div></div></a><a class="pagination-related" href="/my-blog/2026/06/17/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0Hexo%E5%86%99%E5%8D%9A%E5%AE%A2/" title="如何学习Hexo写博客"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-17</div><div class="info-item-2">如何学习Hexo写博客</div></div><div class="info-2"><div class="info-item-1">1. 在哪里写文章？文章都放在这个文件夹里： 1my-blog/source/_posts/  每篇文章都是一个 .md 文件（Markdown 格式）。  2. 创建新文章的方法方法一：双击 “新建文章.bat”（最简单） 打开 my-blog 文件夹 双击 新建文章.bat 输入文章标题，回车 文章就创建好了！  方法二：在命令行创建12cd my-blognode_modules\.bin\hexo new &quot;文章标题&quot;   3. Markdown 写作格式文章分两部分：头部信息 + 正文内容 头部信息（YAML Front Matter）123456789---title: 文章标题date: 2026-06-17 15:36:39tags:  - 标签1  - 标签2categories:  - 分类名称---     字段 说明    title 文章标题   date 发布时间   tags 标签（可以给文章打多个标签）   categories 分类（文章归类）   正文内容（Markdown 语法）标题： 123# 一级标题## 二级标题##...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/my-blog/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/my-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">博主</div><div class="author-info-description">这是一个用 Hexo 搭建的个人博客</div><div class="site-data"><a href="/my-blog/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/my-blog/tags/"><div class="headline">标签</div><div class="length-num">7</div></a><a href="/my-blog/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="toc-number">2.</span> <span class="toc-text">一、准备工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%A0%E9%9C%80%E8%A6%81%E5%87%86%E5%A4%87%E4%BB%80%E4%B9%88"><span class="toc-number">2.1.</span> <span class="toc-text">你需要准备什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%89%8D%E4%BA%86%E8%A7%A3%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">2.2.</span> <span class="toc-text">提前了解的概念</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E8%BD%AF%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">二、安装基础软件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-1%EF%BC%9A%E5%AE%89%E8%A3%85-Git%EF%BC%88%E4%B8%8B%E8%BD%BD%E4%BB%A3%E7%A0%81%E7%94%A8%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">步骤 1：安装 Git（下载代码用）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92"><span class="toc-number">3.1.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-2%EF%BC%9A%E5%AE%89%E8%A3%85-Node-js%EF%BC%88%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">步骤 2：安装 Node.js（运行环境）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-3%EF%BC%9A%E5%AE%89%E8%A3%85-Python%EF%BC%88%E5%A4%84%E7%90%86%E8%84%9A%E6%9C%AC%E7%94%A8%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">步骤 3：安装 Python（处理脚本用）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-2"><span class="toc-number">3.3.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-4%EF%BC%9A%E5%AE%89%E8%A3%85-FFmpeg%EF%BC%88%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">步骤 4：安装 FFmpeg（视频处理核心）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-3"><span class="toc-number">3.4.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%8B%E8%BD%BD-OpenMontage"><span class="toc-number">4.</span> <span class="toc-text">三、下载 OpenMontage</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-5%EF%BC%9A%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE%E6%96%87%E4%BB%B6%E5%A4%B9%E5%B9%B6%E4%B8%8B%E8%BD%BD%E4%BB%A3%E7%A0%81"><span class="toc-number">4.1.</span> <span class="toc-text">步骤 5：创建项目文件夹并下载代码</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-4"><span class="toc-number">4.1.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"><span class="toc-number">5.</span> <span class="toc-text">四、初始化项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-6%EF%BC%9A%E5%AE%89%E8%A3%85%E9%A1%B9%E7%9B%AE%E4%BE%9D%E8%B5%96"><span class="toc-number">5.1.</span> <span class="toc-text">步骤 6：安装项目依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-5"><span class="toc-number">5.1.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-7%EF%BC%9A%E6%A3%80%E6%9F%A5-make-%E5%91%BD%E4%BB%A4"><span class="toc-number">5.2.</span> <span class="toc-text">步骤 7：检查 make 命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-6"><span class="toc-number">5.2.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E9%85%8D%E7%BD%AE-Agnes-API"><span class="toc-number">6.</span> <span class="toc-text">五、配置 Agnes API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-8%EF%BC%9A%E6%B3%A8%E5%86%8C-Agnes-%E8%B4%A6%E5%8F%B7%E5%B9%B6%E8%8E%B7%E5%8F%96-API-Key"><span class="toc-number">6.1.</span> <span class="toc-text">步骤 8：注册 Agnes 账号并获取 API Key</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-7"><span class="toc-number">6.1.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-9%EF%BC%9A%E9%85%8D%E7%BD%AE-env-%E6%96%87%E4%BB%B6"><span class="toc-number">6.2.</span> <span class="toc-text">步骤 9：配置 .env 文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-8"><span class="toc-number">6.2.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E9%9B%86%E6%88%90-Agnes-%E5%88%B0-OpenMontage"><span class="toc-number">7.</span> <span class="toc-text">六、集成 Agnes 到 OpenMontage</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-10%EF%BC%9A%E5%88%9B%E5%BB%BA-Agnes-%E5%9B%BE%E5%83%8F%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7"><span class="toc-number">7.1.</span> <span class="toc-text">步骤 10：创建 Agnes 图像生成工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-9"><span class="toc-number">7.1.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-11%EF%BC%9A%E5%88%9B%E5%BB%BA-Agnes-%E8%A7%86%E9%A2%91%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7"><span class="toc-number">7.2.</span> <span class="toc-text">步骤 11：创建 Agnes 视频生成工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-12%EF%BC%9A%E6%B3%A8%E5%86%8C-Agnes-%E5%B7%A5%E5%85%B7"><span class="toc-number">7.3.</span> <span class="toc-text">步骤 12：注册 Agnes 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AA%8C%E8%AF%81-Agnes-%E5%B7%A5%E5%85%B7%E6%98%AF%E5%90%A6%E6%AD%A3%E7%A1%AE%E6%B3%A8%E5%86%8C"><span class="toc-number">7.3.1.</span> <span class="toc-text">验证 Agnes 工具是否正确注册</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-10"><span class="toc-number">7.3.2.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E6%B5%8B%E8%AF%95%E9%AA%8C%E8%AF%81"><span class="toc-number">8.</span> <span class="toc-text">七、测试验证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-13%EF%BC%9A%E6%B5%8B%E8%AF%95-Agnes-API-%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="toc-number">8.1.</span> <span class="toc-text">步骤 13：测试 Agnes API 连通性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B8%A9%E5%9D%91%E6%8F%90%E9%86%92-11"><span class="toc-number">8.1.1.</span> <span class="toc-text">踩坑提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-14%EF%BC%9A%E5%88%B6%E4%BD%9C%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%B5%8B%E8%AF%95%E8%A7%86%E9%A2%91"><span class="toc-number">8.2.</span> <span class="toc-text">步骤 14：制作第一个测试视频</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E9%83%A8%E7%BD%B2%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9%E4%B8%8E%E5%AE%9E%E6%B5%8B%E7%BB%8F%E9%AA%8C"><span class="toc-number">9.</span> <span class="toc-text">八、部署方案选择与实测经验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A%E5%AE%8C%E5%85%A8%E9%9B%B6%E6%88%90%E6%9C%AC%E8%B7%AF%E5%BE%84%EF%BC%88%E7%9C%9F%E5%AE%9E%E5%BD%B1%E5%83%8F%E7%B4%A0%E6%9D%90-Piper-%E6%9C%AC%E5%9C%B0-TTS-%E5%85%8D%E8%B4%B9%E9%9F%B3%E4%B9%90%EF%BC%89"><span class="toc-number">9.1.</span> <span class="toc-text">方案一：完全零成本路径（真实影像素材 + Piper 本地 TTS + 免费音乐）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E6%B5%8B%E7%BB%8F%E9%AA%8C"><span class="toc-number">9.1.1.</span> <span class="toc-text">实测经验</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9AAgnes-%E5%85%A8%E6%A8%A1%E6%80%81%E8%B7%AF%E5%BE%84%EF%BC%88Agnes-AI-%E7%94%9F%E6%88%90%E6%89%80%E6%9C%89%E7%B4%A0%E6%9D%90-Piper-TTS-%E5%85%8D%E8%B4%B9%E9%9F%B3%E4%B9%90%EF%BC%89"><span class="toc-number">9.2.</span> <span class="toc-text">方案二：Agnes 全模态路径（Agnes AI 生成所有素材 + Piper TTS + 免费音乐）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E6%B5%8B%E7%BB%8F%E9%AA%8C-1"><span class="toc-number">9.2.1.</span> <span class="toc-text">实测经验</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9A%E5%95%86%E4%B8%9A-API-%E6%B7%B7%E5%90%88%E8%B7%AF%E5%BE%84%EF%BC%88FLUX-Kling-ElevenLabs-%E7%AD%89%E4%BB%98%E8%B4%B9%E6%9C%8D%E5%8A%A1%EF%BC%89"><span class="toc-number">9.3.</span> <span class="toc-text">方案三：商业 API 混合路径（FLUX&#x2F;Kling&#x2F;ElevenLabs 等付费服务）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E6%B5%8B%E7%BB%8F%E9%AA%8C-2"><span class="toc-number">9.3.1.</span> <span class="toc-text">实测经验</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E5%9B%9B%EF%BC%9A%E6%B7%B7%E5%90%88%E6%96%B9%E6%A1%88%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89"><span class="toc-number">9.4.</span> <span class="toc-text">方案四：混合方案（推荐）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8E%A8%E8%8D%90%E6%B7%B7%E5%90%88%E6%96%B9%E6%A1%88%EF%BC%9F%E2%80%94%E2%80%94%E5%AE%9E%E6%B5%8B%E9%80%BB%E8%BE%91"><span class="toc-number">9.4.1.</span> <span class="toc-text">为什么推荐混合方案？——实测逻辑</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9%E5%86%B3%E7%AD%96%E6%A0%91"><span class="toc-number">9.5.</span> <span class="toc-text">方案选择决策树</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E6%97%A5%E5%B8%B8%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="toc-number">10.</span> <span class="toc-text">九、日常使用流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E8%A7%86%E9%A2%91%E7%9A%84%E5%9B%BA%E5%AE%9A%E6%B5%81%E7%A8%8B"><span class="toc-number">10.1.</span> <span class="toc-text">制作视频的固定流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E6%96%B9%E6%A1%88%E4%B8%93%E7%94%A8%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%A8%A1%E6%9D%BF"><span class="toc-number">10.2.</span> <span class="toc-text">混合方案专用提示词模板</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E9%80%9F%E6%9F%A5"><span class="toc-number">11.</span> <span class="toc-text">十、常见问题速查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E9%87%8D%E8%A6%81%E6%8F%90%E9%86%92"><span class="toc-number">12.</span> <span class="toc-text">十一、重要提醒</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E6%8F%90%E9%86%92"><span class="toc-number">12.1.</span> <span class="toc-text">安全提醒</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%90%E6%9C%AC%E6%8F%90%E9%86%92"><span class="toc-number">12.2.</span> <span class="toc-text">成本提醒</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%87%E4%BB%BD%E6%8F%90%E9%86%92"><span class="toc-number">12.3.</span> <span class="toc-text">备份提醒</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E6%8F%90%E9%86%92"><span class="toc-number">12.4.</span> <span class="toc-text">版本提醒</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E6%A1%88%E4%BE%8B%E6%A8%A1%E6%9D%BF"><span class="toc-number">13.</span> <span class="toc-text">附录：案例模板</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-1%EF%BC%9A%E7%BA%AA%E5%BD%95%E7%89%87%E9%A3%8E%E6%A0%BC-%E2%80%94-%E2%80%9C20%E4%B8%96%E7%BA%AA%E5%A4%AA%E7%A9%BA%E6%8E%A2%E7%B4%A2%E2%80%9D%EF%BC%88%E6%B7%B7%E5%90%88%E6%96%B9%E6%A1%88%EF%BC%89"><span class="toc-number">13.1.</span> <span class="toc-text">案例 1：纪录片风格 — “20世纪太空探索”（混合方案）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-2%EF%BC%9A%E5%9F%8E%E5%B8%82%E4%BA%BA%E6%96%87-%E2%80%94-%E2%80%9C%E9%9B%A8%E4%B8%AD%E7%9A%84%E4%B8%8A%E6%B5%B7%E2%80%9D%EF%BC%88%E6%B7%B7%E5%90%88%E6%96%B9%E6%A1%88%EF%BC%89"><span class="toc-number">13.2.</span> <span class="toc-text">案例 2：城市人文 — “雨中的上海”（混合方案）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-3%EF%BC%9A%E7%A7%91%E6%8A%80%E8%A7%A3%E8%AF%B4-%E2%80%94-%E2%80%9C%E5%8C%BA%E5%9D%97%E9%93%BE%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E2%80%9D%EF%BC%88Agnes%E5%85%A8%E6%A8%A1%E6%80%81%EF%BC%89"><span class="toc-number">13.3.</span> <span class="toc-text">案例 3：科技解说 — “区块链工作原理”（Agnes全模态）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-4%EF%BC%9A%E6%9C%AA%E6%9D%A5%E7%A7%91%E5%B9%BB-%E2%80%94-%E2%80%9C2050%E5%B9%B4%E7%9A%84%E5%9F%8E%E5%B8%82%E7%94%9F%E6%B4%BB%E2%80%9D%EF%BC%88Agnes%E5%85%A8%E6%A8%A1%E6%80%81%EF%BC%89"><span class="toc-number">13.4.</span> <span class="toc-text">案例 4：未来科幻 — “2050年的城市生活”（Agnes全模态）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-5%EF%BC%9A%E6%95%99%E8%82%B2%E5%8A%A8%E7%94%BB-%E2%80%94-%E2%80%9C%E5%85%89%E5%90%88%E4%BD%9C%E7%94%A8%E7%9A%84%E8%BF%87%E7%A8%8B%E2%80%9D%EF%BC%88%E6%B7%B7%E5%90%88%E6%96%B9%E6%A1%88%EF%BC%89"><span class="toc-number">13.5.</span> <span class="toc-text">案例 5：教育动画 — “光合作用的过程”（混合方案）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B-6%EF%BC%9A%E8%87%AA%E7%84%B6%E7%A7%91%E6%99%AE-%E2%80%94-%E2%80%9C%E8%9C%9C%E8%9C%82%E7%9A%84%E8%88%9E%E8%B9%88%E8%AF%AD%E8%A8%80%E2%80%9D%EF%BC%88%E9%9B%B6%E6%88%90%E6%9C%AC%E6%96%B9%E6%A1%88%EF%BC%89"><span class="toc-number">13.6.</span> <span class="toc-text">案例 6：自然科普 — “蜜蜂的舞蹈语言”（零成本方案）</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/18/test/" title="测试">测试</a><time datetime="2026-06-18T13:00:00.000Z" title="发表于 2026-06-18 21:00:00">2026-06-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/18/OpenMontage-%E5%AE%8C%E6%95%B4%E5%AE%89%E8%A3%85%E8%B0%83%E8%AF%95%E4%B8%8E%E9%83%A8%E7%BD%B2/" title="OpenMontage 完整安装调试与部署">OpenMontage 完整安装调试与部署</a><time datetime="2026-06-18T12:43:10.000Z" title="发表于 2026-06-18 20:43:10">2026-06-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/17/paddleocr-local/" title="paddleocr-local">paddleocr-local</a><time datetime="2026-06-17T11:29:19.000Z" title="发表于 2026-06-17 19:29:19">2026-06-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/17/hexo-blog-tutorial/" title="零基础搭建免费博客：Hexo + GitHub Pages 完整教程">零基础搭建免费博客：Hexo + GitHub Pages 完整教程</a><time datetime="2026-06-17T08:00:00.000Z" title="发表于 2026-06-17 16:00:00">2026-06-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/my-blog/2026/06/17/%E5%A6%82%E4%BD%95%E5%AD%A6%E4%B9%A0Hexo%E5%86%99%E5%8D%9A%E5%AE%A2/" title="如何学习Hexo写博客">如何学习Hexo写博客</a><time datetime="2026-06-17T07:36:39.000Z" title="发表于 2026-06-17 15:36:39">2026-06-17</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By 博主</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.5</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/my-blog/js/utils.js?v=5.5.5"></script><script src="/my-blog/js/main.js?v=5.5.5"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
